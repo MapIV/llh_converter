@@ -72,6 +72,8 @@ public:
   void getMapOriginDeg(double& lat_rad, double& lon_rad, const LLHParam& param);
   void getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param);
 
+  std::string getMGRSGridCode() { return mgrs_code_; }
+
 private:
   double plane_lat_rad_, plane_lon_rad_;
   std::string mgrs_code_;
