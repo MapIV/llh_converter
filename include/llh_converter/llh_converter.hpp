@@ -69,10 +69,14 @@ public:
   void revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg, const LLHParam& param);
   void revertXYZ2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad, const LLHParam& param);
 
+  void convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y, const LLHParam& param);
+  void convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y, const LLHParam& param);
+
   void getMapOriginDeg(double& lat_rad, double& lon_rad, const LLHParam& param);
   void getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param);
 
   std::string getMGRSGridCode() { return mgrs_code_; }
+  void setMGRSGridCode(const std::string& mgrs_code) { mgrs_code_ = mgrs_code; }
 
 private:
   double plane_lat_rad_, plane_lon_rad_;
@@ -93,9 +97,9 @@ private:
   HeightConverter height_converter_;
 
   // Functions
-  // Japan Plane Rectangular Coordinates
-  void convRad2Plane(const double& lat_rad, const double& lon_rad, double& x, double& y);
-  void revPlane2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
+  // Japan Plane Rectangular Coordinate System
+  void convRad2JPRCS(const double& lat_rad, const double& lon_rad, double& x, double& y);
+  void revJPRCS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
   // MGRS
   void convRad2MGRS(const double& lat_rad, const double& lon_rad, double& x, double& y);
   void revMGRS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);

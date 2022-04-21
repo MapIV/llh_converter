@@ -60,7 +60,7 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
   else
   {
     setPlaneNum(param.plane_num);
-    convRad2Plane(lat_rad, lon_rad, x, y);
+    convRad2JPRCS(lat_rad, lon_rad, x, y);
   }
 
   // Convert h to z
@@ -87,8 +87,27 @@ void LLHConverter::revertXYZ2Rad(const double& x, const double& y, double& lat_r
   else
   {
     setPlaneNum(param.plane_num);
-    revPlane2Rad(x, y, lat_rad, lon_rad);
+    revJPRCS2Rad(x, y, lat_rad, lon_rad);
   }
+}
+
+void LLHConverter::convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y, const LLHParam& param)
+{
+  double lat_rad, lon_rad;
+  mgrs_code_ = param.mgrs_code;
+  revMGRS2Rad(m_x, m_y, lat_rad, lon_rad);
+
+  setPlaneNum(param.plane_num);
+  convRad2JPRCS(lat_rad, lon_rad, j_x, j_y);
+}
+
+void LLHConverter::convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y, const LLHParam& param)
+{
+  double lat_rad, lon_rad;
+  setPlaneNum(param.plane_num);
+  revJPRCS2Rad(j_x, j_y, lat_rad, lon_rad);
+
+  convRad2MGRS(lat_rad, lon_rad, m_x, m_y);
 }
 
 void LLHConverter::getMapOriginDeg(double& lat_deg, double& lon_deg, const LLHParam& param)
@@ -113,7 +132,7 @@ void LLHConverter::getMapOriginRad(double& lat_rad, double& lon_rad, const LLHPa
 }
 
 // Private Member functions
-void LLHConverter::convRad2Plane(const double& lat_rad, const double& lon_rad, double& x, double& y)
+void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, double& x, double& y)
 {
   double PS, PSo, PDL, Pt, PN, PW;
 
@@ -198,7 +217,7 @@ void LLHConverter::convRad2Plane(const double& lat_rad, const double& lon_rad, d
                     pow(PDL, 7)) * m0_;
 }
 
-void LLHConverter::revPlane2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad)
+void LLHConverter::revJPRCS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad)
 {
   double n = 1. / (2 * F_ - 1);
   double n2 = n * n;
