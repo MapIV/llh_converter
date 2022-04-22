@@ -39,6 +39,12 @@
 
 namespace llh_converter
 {
+// Constructor
+LLHConverter::LLHConverter()
+{
+  height_converter_.loadGSIGEOGeoidFile();
+}
+
 // Public fumember functions
 void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h,
                     double& x, double& y, double& z, const LLHParam& param)

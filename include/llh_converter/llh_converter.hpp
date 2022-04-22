@@ -64,6 +64,8 @@ struct LLHParam
 class LLHConverter
 {
 public:
+  LLHConverter();
+
   void convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y, double& z, const LLHParam& param);
   void convertRad2XYZ(const double& lat_rad, const double& lon_rad, const double& h, double& x, double& y, double& z, const LLHParam& param);
   void revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg, const LLHParam& param);
