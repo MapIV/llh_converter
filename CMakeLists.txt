@@ -31,6 +31,6 @@ add_library(llh_converter SHARED
 )
 target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
 
-add_executable(test test/height_converter_test.cpp)
-target_link_libraries(test ${catkin_LIBRARIES} llh_converter)
-add_dependencies(test ${catkin_EXPORTED_TARGETS})
+add_executable(llh_test test/height_converter_test.cpp)
+target_link_libraries(llh_test ${catkin_LIBRARIES} llh_converter)
+add_dependencies(llh_test ${catkin_EXPORTED_TARGETS})
