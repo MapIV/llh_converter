@@ -94,8 +94,19 @@ int main(int argc, char** argv)
   param.height_convert_type = llh_converter::ConvertType::NONE;
   param.geoid_type = llh_converter::GeoidType::EGM2008;
 
+  double test_lat = 35.5, test_lon = 135.5;
+
   double x, y, z;
-  llh_converter.convertDeg2XYZ(35, 135, 50, x, y, z, param);
+  std::cout << "TEST MGRS" << std::endl;
+  llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
+  std::cout << std::setprecision(15) << x << ", " << y << ", " << z << std::endl;
+
+  // Test JPRCS
+  param.use_mgrs = false;
+  param.plane_num = 5;
+
+  std::cout << "TEST JPRCS" << std::endl;
+  llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
   std::cout << std::setprecision(15) << x << ", " << y << ", " << z << std::endl;
 
   return 0;

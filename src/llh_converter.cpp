@@ -145,7 +145,7 @@ void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, d
   double PB1, PB2, PB3, PB4, PB5, PB6, PB7, PB8, PB9;
   double PA, PB, PC, PD, PE, PF_, PG, PH, PI;
   double Pe, Pet, Pnn;
-  double a_, F_W;
+  double F_W;
 
   F_W = 1.0 / F_;   //Geometrical flattening
 
