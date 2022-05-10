@@ -53,6 +53,6 @@ private:
   // Flag
   bool is_geoid_loaded_ = false;
 };
-}
+}  // namespace llh_converter
 
 #endif

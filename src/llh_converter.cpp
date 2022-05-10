@@ -46,8 +46,8 @@ LLHConverter::LLHConverter()
 }
 
 // Public fumember functions
-void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h,
-                    double& x, double& y, double& z, const LLHParam& param)
+void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y,
+                                  double& z, const LLHParam& param)
 {
   double lat_rad = lat_deg * M_PI / 180.;
   double lon_rad = lon_deg * M_PI / 180.;
@@ -55,8 +55,8 @@ void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, 
   convertRad2XYZ(lat_rad, lon_rad, h, x, y, z, param);
 }
 
-void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, const double& h,
-                    double& x, double& y, double& z, const LLHParam& param)
+void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, const double& h, double& x, double& y,
+                                  double& z, const LLHParam& param)
 {
   // Convert lat/lon to x/y
   if (param.use_mgrs)
@@ -74,7 +74,8 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
   z = height_converter_.convertHeightRad(lat_rad, lon_rad, h, param.height_convert_type);
 }
 
-void LLHConverter::revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg, const LLHParam& param)
+void LLHConverter::revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg,
+                                 const LLHParam& param)
 {
   double lat_rad = 0, lon_rad = 0;
   revertXYZ2Rad(x, y, lat_rad, lon_rad, param);
@@ -82,7 +83,8 @@ void LLHConverter::revertXYZ2Deg(const double& x, const double& y, double& lat_d
   lon_deg = lon_rad * 180. / M_PI;
 }
 
-void LLHConverter::revertXYZ2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad, const LLHParam& param)
+void LLHConverter::revertXYZ2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad,
+                                 const LLHParam& param)
 {
   // Revert lat/lon to x/y
   if (param.use_mgrs)
@@ -97,7 +99,8 @@ void LLHConverter::revertXYZ2Rad(const double& x, const double& y, double& lat_r
   }
 }
 
-void LLHConverter::convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y, const LLHParam& param)
+void LLHConverter::convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y,
+                                     const LLHParam& param)
 {
   double lat_rad, lon_rad;
   mgrs_code_ = param.mgrs_code;
@@ -107,7 +110,8 @@ void LLHConverter::convertMGRS2JPRCS(const double& m_x, const double& m_y, doubl
   convRad2JPRCS(lat_rad, lon_rad, j_x, j_y);
 }
 
-void LLHConverter::convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y, const LLHParam& param)
+void LLHConverter::convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y,
+                                     const LLHParam& param)
 {
   double lat_rad, lon_rad;
   setPlaneNum(param.plane_num);
@@ -148,7 +152,7 @@ void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, d
   double Pe, Pet, Pnn;
   double F_W;
 
-  F_W = 1.0 / F_;   //Geometrical flattening
+  F_W = 1.0 / F_;  // Geometrical flattening
 
   Pe = (double)sqrt(2.0 * F_W - pow(F_W, 2));
   Pet = (double)sqrt(pow(Pe, 2) / (1.0 - pow(Pe, 2)));
@@ -173,7 +177,7 @@ void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, d
        4099095.0 / 29360128.0 * pow(Pe, 14) + 348423075.0 / 1879048192.0 * pow(Pe, 16);
 
   PF_ = (double)693.0 / 131072.0 * pow(Pe, 10) + 9009.0 / 524288.0 * pow(Pe, 12) +
-       4099095.0 / 117440512.0 * pow(Pe, 14) + 26801775.0 / 469762048.0 * pow(Pe, 16);
+        4099095.0 / 117440512.0 * pow(Pe, 14) + 26801775.0 / 469762048.0 * pow(Pe, 16);
 
   PG = (double)3003.0 / 2097152.0 * pow(Pe, 12) + 315315.0 / 58720256.0 * pow(Pe, 14) +
        11486475.0 / 939524096.0 * pow(Pe, 16);
@@ -207,21 +211,23 @@ void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, d
   Pnn = (double)sqrt(pow(Pet, 2) * pow(cos(lat_rad), 2));
 
   y = (double)((PS - PSo) + (1.0 / 2.0) * PN * pow(cos(lat_rad), 2.0) * Pt * pow(PDL, 2.0) +
-                (1.0 / 24.0) * PN * pow(cos(lat_rad), 4) * Pt *
-                    (5.0 - pow(Pt, 2) + 9.0 * pow(Pnn, 2) + 4.0 * pow(Pnn, 4)) * pow(PDL, 4) -
-                (1.0 / 720.0) * PN * pow(cos(lat_rad), 6) * Pt *
-                    (-61.0 + 58.0 * pow(Pt, 2) - pow(Pt, 4) - 270.0 * pow(Pnn, 2) + 330.0 * pow(Pt, 2) * pow(Pnn, 2)) *
-                    pow(PDL, 6) -
-                (1.0 / 40320.0) * PN * pow(cos(lat_rad), 8) * Pt *
-                    (-1385.0 + 3111 * pow(Pt, 2) - 543 * pow(Pt, 4) + pow(Pt, 6)) * pow(PDL, 8)) * m0_;
+               (1.0 / 24.0) * PN * pow(cos(lat_rad), 4) * Pt *
+                   (5.0 - pow(Pt, 2) + 9.0 * pow(Pnn, 2) + 4.0 * pow(Pnn, 4)) * pow(PDL, 4) -
+               (1.0 / 720.0) * PN * pow(cos(lat_rad), 6) * Pt *
+                   (-61.0 + 58.0 * pow(Pt, 2) - pow(Pt, 4) - 270.0 * pow(Pnn, 2) + 330.0 * pow(Pt, 2) * pow(Pnn, 2)) *
+                   pow(PDL, 6) -
+               (1.0 / 40320.0) * PN * pow(cos(lat_rad), 8) * Pt *
+                   (-1385.0 + 3111 * pow(Pt, 2) - 543 * pow(Pt, 4) + pow(Pt, 6)) * pow(PDL, 8)) *
+      m0_;
 
   x = (double)(PN * cos(lat_rad) * PDL -
-                1.0 / 6.0 * PN * pow(cos(lat_rad), 3) * (-1 + pow(Pt, 2) - pow(Pnn, 2)) * pow(PDL, 3) -
-                1.0 / 120.0 * PN * pow(cos(lat_rad), 5) *
-                    (-5.0 + 18.0 * pow(Pt, 2) - pow(Pt, 4) - 14.0 * pow(Pnn, 2) + 58.0 * pow(Pt, 2) * pow(Pnn, 2)) *
-                    pow(PDL, 5) -
-                1.0 / 5040.0 * PN * pow(cos(lat_rad), 7) * (-61.0 + 479.0 * pow(Pt, 2) - 179.0 * pow(Pt, 4) + pow(Pt, 6)) *
-                    pow(PDL, 7)) * m0_;
+               1.0 / 6.0 * PN * pow(cos(lat_rad), 3) * (-1 + pow(Pt, 2) - pow(Pnn, 2)) * pow(PDL, 3) -
+               1.0 / 120.0 * PN * pow(cos(lat_rad), 5) *
+                   (-5.0 + 18.0 * pow(Pt, 2) - pow(Pt, 4) - 14.0 * pow(Pnn, 2) + 58.0 * pow(Pt, 2) * pow(Pnn, 2)) *
+                   pow(PDL, 5) -
+               1.0 / 5040.0 * PN * pow(cos(lat_rad), 7) *
+                   (-61.0 + 479.0 * pow(Pt, 2) - 179.0 * pow(Pt, 4) + pow(Pt, 6)) * pow(PDL, 7)) *
+      m0_;
 }
 
 void LLHConverter::revJPRCS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad)
@@ -254,7 +260,8 @@ void LLHConverter::revJPRCS2Rad(const double& x, const double& y, double& lat_ra
   double d6 = 601676 / 22275. * n6;
 
   double Sb = A0 * plane_lat_rad_ + A1 * std::sin(2 * plane_lat_rad_) + A2 * std::sin(4 * plane_lat_rad_) +
-              A3 * std::sin(6 * plane_lat_rad_) + A4 * std::sin(8 * plane_lat_rad_) + A5 * std::sin(10 * plane_lat_rad_);
+              A3 * std::sin(6 * plane_lat_rad_) + A4 * std::sin(8 * plane_lat_rad_) +
+              A5 * std::sin(10 * plane_lat_rad_);
   Sb = m0_ * a_ / (1 + n) * Sb;
 
   double Ab = m0_ * a_ / (1 + n) * A0;
@@ -272,7 +279,7 @@ void LLHConverter::revJPRCS2Rad(const double& x, const double& y, double& lat_ra
   double X = std::asin(std::sin(eps1) / std::cosh(eta1));
 
   lat_rad = X + d1 * std::sin(2 * X) + d2 * std::sin(4 * X) + d3 * std::sin(6 * X) + d4 * std::sin(8 * X) +
-        d5 * std::sin(10 * X) + d6 * std::sin(12 * X);
+            d5 * std::sin(10 * X) + d6 * std::sin(12 * X);
   lon_rad = plane_lon_rad_ + std::atan(std::sinh(eta1) / std::cos(eps1));
 }
 
@@ -306,7 +313,8 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
     mgrs_code_ = mgrs_code.substr(0, grid_code_size_);
     double map_rate = std::pow(10, static_cast<int>(MGRSPrecision::METER_1) - static_cast<int>(precision_));
     x = std::stod(mgrs_code.substr(grid_code_size_, static_cast<int>(precision_))) * map_rate;
-    y = std::stod(mgrs_code.substr(grid_code_size_ + static_cast<int>(precision_), static_cast<int>(precision_))) * map_rate;
+    y = std::stod(mgrs_code.substr(grid_code_size_ + static_cast<int>(precision_), static_cast<int>(precision_))) *
+        map_rate;
 
     if (use_origin_zone_)
     {
@@ -384,7 +392,7 @@ int LLHConverter::checkCrossBoader(const std::string& code_origin, const std::st
       exit(EXIT_FAILURE);
     }
   }
-  else    // is y
+  else  // is y
   {
     if (diff == -19 || diff == 1)
     {
@@ -408,7 +416,7 @@ int LLHConverter::checkCrossBoader(const std::string& code_origin, const std::st
 
 void LLHConverter::setPlaneNum(int plane_num)
 {
-    // longitude and latitude of origin of each plane in Japan
+  // longitude and latitude of origin of each plane in Japan
   int lon_deg, lon_min, lat_deg, lat_min;
 
   if (plane_num == 1)
@@ -549,4 +557,4 @@ void LLHConverter::setPlaneNum(int plane_num)
   plane_lat_rad_ = M_PI * ((double)lat_deg + (double)lat_min / 60.0) / 180.0;
   plane_lon_rad_ = M_PI * ((double)lon_deg + (double)lon_min / 60.0) / 180.0;
 }
-}
+}  // namespace llh_converter

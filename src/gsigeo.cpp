@@ -90,9 +90,8 @@ void GSIGEO2011::loadGeoidMap(const std::string& geoid_file)
     {
       geoid_map_[i][j] = std::stod(str_vec[k]);
       j++;
-      
     }
-    if (j == column_size_) 
+    if (j == column_size_)
     {
       j = 0;
       i++;
@@ -130,14 +129,16 @@ double GSIGEO2011::getGeoid(const double& lat, const double& lon)
     exit(1);
   }
 
-  if (geoid_map_[i_lat][i_lon] == 999 || geoid_map_[i_lat][j_lon] == 999 || geoid_map_[j_lat][i_lon] == 999 || geoid_map_[j_lat][j_lon] == 999)
+  if (geoid_map_[i_lat][i_lon] == 999 || geoid_map_[i_lat][j_lon] == 999 || geoid_map_[j_lat][i_lon] == 999 ||
+      geoid_map_[j_lat][j_lon] == 999)
   {
     std::cerr << "Error: Not supported area" << std::endl;
     exit(1);
   }
 
-  double geoid = (1-t)*(1-u)*geoid_map_[i_lat][i_lon] + (1-t)*u*geoid_map_[i_lat][j_lon] + t*(1-u)*geoid_map_[j_lat][i_lon] + t*u*geoid_map_[j_lat][j_lon];
+  double geoid = (1 - t) * (1 - u) * geoid_map_[i_lat][i_lon] + (1 - t) * u * geoid_map_[i_lat][j_lon] +
+                 t * (1 - u) * geoid_map_[j_lat][i_lon] + t * u * geoid_map_[j_lat][j_lon];
 
   return geoid;
 }
-}
+}  // namespace llh_converter

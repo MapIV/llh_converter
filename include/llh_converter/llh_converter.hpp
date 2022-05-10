@@ -66,8 +66,10 @@ class LLHConverter
 public:
   LLHConverter();
 
-  void convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y, double& z, const LLHParam& param);
-  void convertRad2XYZ(const double& lat_rad, const double& lon_rad, const double& h, double& x, double& y, double& z, const LLHParam& param);
+  void convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y, double& z,
+                      const LLHParam& param);
+  void convertRad2XYZ(const double& lat_rad, const double& lon_rad, const double& h, double& x, double& y, double& z,
+                      const LLHParam& param);
   void revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg, const LLHParam& param);
   void revertXYZ2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad, const LLHParam& param);
 
@@ -77,8 +79,14 @@ public:
   void getMapOriginDeg(double& lat_rad, double& lon_rad, const LLHParam& param);
   void getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param);
 
-  std::string getMGRSGridCode() { return mgrs_code_; }
-  void setMGRSGridCode(const std::string& mgrs_code) { mgrs_code_ = mgrs_code; }
+  std::string getMGRSGridCode()
+  {
+    return mgrs_code_;
+  }
+  void setMGRSGridCode(const std::string& mgrs_code)
+  {
+    mgrs_code_ = mgrs_code;
+  }
 
 private:
   double plane_lat_rad_, plane_lon_rad_;
@@ -115,8 +123,7 @@ private:
                                              { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
                                              { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
                                              { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } };
-
 };
-}
+}  // namespace llh_converter
 
 #endif

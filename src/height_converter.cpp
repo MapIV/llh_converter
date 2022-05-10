@@ -34,14 +34,16 @@
 
 namespace llh_converter
 {
-double HeightConverter::convertHeightRad(const double& lat_rad, const double& lon_rad, const double& h, const ConvertType& type)
+double HeightConverter::convertHeightRad(const double& lat_rad, const double& lon_rad, const double& h,
+                                         const ConvertType& type)
 {
   double lat_deg = lat_rad * 180. / M_PI;
   double lon_deg = lon_rad * 180. / M_PI;
   return convertHeightDeg(lat_deg, lon_deg, h, type);
 }
 
-double HeightConverter::convertHeightDeg(const double& lat_deg, const double& lon_deg, const double& h, const ConvertType& type)
+double HeightConverter::convertHeightDeg(const double& lat_deg, const double& lon_deg, const double& h,
+                                         const ConvertType& type)
 {
   double geoid_height = getGeoidDeg(lat_deg, lon_deg);
   return h + geoid_height * type;
@@ -97,4 +99,4 @@ double HeightConverter::getGeoidGSIGEO2011(const double& lat_deg, const double& 
 {
   return gsigeo2011_.getGeoid(lat_deg, lon_deg);
 }
-}
+}  // namespace llh_converter
