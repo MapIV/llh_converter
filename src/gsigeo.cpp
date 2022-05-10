@@ -70,10 +70,10 @@ void GSIGEO2011::loadGeoidMap(const std::string& geoid_file)
     exit(2);
   }
 
-  geoid_map_.reserve(row_size_);
+  geoid_map_.resize(row_size_);
   for (int i = 0; i < row_size_; i++)
   {
-    geoid_map_[i].reserve(column_size_);
+    geoid_map_[i].resize(column_size_);
   }
 
   std::string curr_line;

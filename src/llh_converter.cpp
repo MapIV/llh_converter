@@ -132,6 +132,7 @@ void LLHConverter::getMapOriginRad(double& lat_rad, double& lon_rad, const LLHPa
   }
   else
   {
+    setPlaneNum(param.plane_num);
     lat_rad = plane_lat_rad_;
     lon_rad = plane_lon_rad_;
   }
