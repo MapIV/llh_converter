@@ -132,6 +132,7 @@ void LLHConverter::getMapOriginRad(double& lat_rad, double& lon_rad, const LLHPa
 {
   if (param.use_mgrs)
   {
+    mgrs_code_ = param.mgrs_code;
     revMGRS2Rad(0, 0, lat_rad, lon_rad);
   }
   else
