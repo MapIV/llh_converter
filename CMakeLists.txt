@@ -34,3 +34,16 @@ target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
 add_executable(llh_test test/height_converter_test.cpp)
 target_link_libraries(llh_test ${catkin_LIBRARIES} llh_converter)
 add_dependencies(llh_test ${catkin_EXPORTED_TARGETS})
+
+install(DIRECTORY include/llh_converter/
+  DESTINATION include/llh_converter
+  FILES_MATCHING PATTERN "*.hpp"
+)
+
+install(
+  TARGETS
+    llh_converter
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
