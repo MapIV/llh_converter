@@ -39,10 +39,22 @@
 
 namespace llh_converter
 {
+template <typename L, typename R>
+boost::bimaps::bimap<L, R>
+makeBimap(std::initializer_list<typename boost::bimaps::bimap<L, R>::value_type> list)
+{
+    return boost::bimaps::bimap<L, R>(list.begin(), list.end());
+}
+
 // Constructor
 LLHConverter::LLHConverter()
 {
   height_converter_.loadGSIGEOGeoidFile();
+  mgrs_alphabet_ = makeBimap<std::string, int>({ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
+                                                 { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
+                                                 { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
+                                                 { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
+                                                 { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
 }
 
 // Public fumember functions
@@ -311,7 +323,6 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
   {
     GeographicLib::MGRS::Forward(utm_zone, utm_northup, utx, uty, lat_deg, static_cast<int>(precision_), mgrs_code);
     mgrs_zone = std::stod(mgrs_code.substr(0, grid_code_size_));
-    mgrs_code_ = mgrs_code.substr(0, grid_code_size_);
     double map_rate = std::pow(10, static_cast<int>(MGRSPrecision::METER_1) - static_cast<int>(precision_));
     x = std::stod(mgrs_code.substr(grid_code_size_, static_cast<int>(precision_))) * map_rate;
     y = std::stod(mgrs_code.substr(grid_code_size_ + static_cast<int>(precision_), static_cast<int>(precision_))) *
@@ -321,6 +332,7 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
     {
       if (!is_origin_set_)
       {
+        mgrs_code_ = mgrs_code.substr(0, grid_code_size_);
         origin_x_zone_ = mgrs_code.substr(3, 1);
         origin_y_zone_ = mgrs_code.substr(4, 1);
         is_origin_set_ = true;
@@ -344,10 +356,26 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
 
 void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad)
 {
+  auto [x_cross_num, x_in_grid] = getCrossNum(x);
+  auto [y_cross_num, y_in_grid] = getCrossNum(y);
+
+  if (x_cross_num != 0)
+  {
+    std::string x_zone = mgrs_code_.substr(3, 1);
+    x_zone = getOffsetZone(x_zone, x_cross_num);
+    mgrs_code_.replace(3, 1, x_zone);
+  }
+  if (y_cross_num != 0)
+  {
+    std::string y_zone = mgrs_code_.substr(4, 1);
+    y_zone = getOffsetZone(y_zone, y_cross_num);
+    mgrs_code_.replace(4, 1, y_zone);
+  }
+
   std::ostringstream mgrs_x_code, mgrs_y_code;
   int digit_number = static_cast<int>(MGRSPrecision::MILLI_METER_10);
-  mgrs_x_code << std::setw(digit_number) << std::setfill('0') << std::to_string(static_cast<int>(x * 100));
-  mgrs_y_code << std::setw(digit_number) << std::setfill('0') << std::to_string(static_cast<int>(y * 100));
+  mgrs_x_code << std::setw(digit_number) << std::setfill('0') << std::to_string(static_cast<int>(x_in_grid * 100));
+  mgrs_y_code << std::setw(digit_number) << std::setfill('0') << std::to_string(static_cast<int>(y_in_grid * 100));
 
   std::string mgrs_code = mgrs_code_ + mgrs_x_code.str() + mgrs_y_code.str();
 
@@ -369,9 +397,40 @@ void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad
   }
 }
 
+std::pair<int, double> LLHConverter::getCrossNum(const double& x)
+{
+  int cross_num = 0;
+  double ret_x = x;
+  double grid_size = 100000; // 100km
+  while (ret_x >= grid_size)
+  {
+    ret_x -= grid_size;
+    cross_num++;
+  }
+  while (ret_x < 0)
+  {
+    ret_x += grid_size;
+    cross_num--;
+  }
+
+  return std::make_pair(cross_num, ret_x);
+}
+
+std::string LLHConverter::getOffsetZone(const std::string& zone, const int& offset)
+{
+  if (offset == 0) return zone;
+
+  int zone_num = mgrs_alphabet_.left.at(zone);
+  zone_num += offset;
+  if (zone_num > 23) zone_num -= 24;
+  else if (zone_num < 0) zone_num += 24;
+
+  return mgrs_alphabet_.right.at(zone_num);
+}
+
 int LLHConverter::checkCrossBoader(const std::string& code_origin, const std::string& code_current, bool is_x)
 {
-  int diff = mgrs_alphabet_[code_current] - mgrs_alphabet_[code_origin];
+  int diff = mgrs_alphabet_.left.at(code_current) - mgrs_alphabet_.left.at(code_origin);
 
   if (is_x)
   {
