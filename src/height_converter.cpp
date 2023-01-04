@@ -34,6 +34,27 @@
 
 namespace llh_converter
 {
+static std::vector<std::string> geoid_strings = { "EGM2008", "GSIGEO2011", "NONE" };
+
+std::string getStringFromGeoidType(const GeoidType& geoid)
+{
+  int enum_val = static_cast<int>(geoid);
+  // 0: EGM2008, 1: GSIGEO2011
+  return geoid_strings[enum_val];
+}
+
+GeoidType getGeoidTypeFromString(const std::string& geoid_string)
+{
+  for (int i = 0; i < geoid_strings.size(); i++)
+  {
+    if (geoid_strings[i] == geoid_string)
+      return static_cast<GeoidType>(i);
+  }
+
+  std::cerr << "Error: No matching GeoidType: " << geoid_string << std::endl;
+  exit(1);
+}
+
 double HeightConverter::convertHeightRad(const double& lat_rad, const double& lon_rad, const double& h,
                                          const ConvertType& type)
 {

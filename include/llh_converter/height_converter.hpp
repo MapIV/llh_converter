@@ -43,6 +43,7 @@ enum class GeoidType
 {
   EGM2008 = 0,
   GSIGEO2011 = 1,
+  NONE = 2,
 };
 
 enum ConvertType
@@ -51,6 +52,9 @@ enum ConvertType
   NONE = 0,
   ORTHO2ELLIPS = 1,
 };
+
+std::string getStringFromGeoidType(const GeoidType& geoid);
+GeoidType getGeoidTypeFromString(const std::string& geoid);
 
 class HeightConverter
 {
