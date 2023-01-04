@@ -34,6 +34,8 @@
 #include <string>
 #include <map>
 
+#include <boost/bimap/bimap.hpp>
+
 #include "llh_converter/height_converter.hpp"
 
 namespace llh_converter
@@ -114,15 +116,13 @@ private:
   void convRad2MGRS(const double& lat_rad, const double& lon_rad, double& x, double& y);
   void revMGRS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
 
+  std::pair<int, double> getCrossNum(const double& x);
+  std::string getOffsetZone(const std::string& zone, const int& offset);
   int checkCrossBoader(const std::string& code_origin, const std::string& code_current, bool is_x);
 
   void setPlaneNum(int plane_num);
 
-  std::map<std::string, int> mgrs_alphabet_{ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
-                                             { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
-                                             { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
-                                             { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
-                                             { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } };
+  boost::bimaps::bimap<std::string, int> mgrs_alphabet_;
 };
 }  // namespace llh_converter
 
