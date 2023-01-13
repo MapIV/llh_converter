@@ -35,8 +35,6 @@
 #include <sstream>
 #include <cmath>
 
-#include <boost/algorithm/string.hpp>
-
 namespace llh_converter
 {
 std::vector<std::string> split(std::string input, char delimiter)
