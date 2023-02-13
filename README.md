@@ -1,6 +1,6 @@
 # llh_converter
 
-(Updated 2022/03/24)
+(Updated 2023/02/09)
 
 This repository has two class implementation.
 
