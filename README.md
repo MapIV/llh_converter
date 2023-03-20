@@ -74,6 +74,33 @@ lc.revertXYZ2Rad(x, y, lat_rad, lon_rad, param);
 
 ---
 
+## meridian convergence angle correction
+
+The meridian convergence angle is the angle of difference between true north and coordinate north.
+
+The meridian convergence angle is calculated by the `getMeridianConvergence()` function.
+
+<img src="docs/meridian_convergence_angle.png" width="750">
+
+### Usage
+
+```
+  llh_converter::LLHConverter lc;
+  llh_converter::LLHParam param;
+  param.use_mgrs = false;
+  param.plane_num = 7;
+  param.height_convert_type = llh_converter::ConvertType::NONE;
+  param.geoid_type = llh_converter::GeoidType::EGM2008;
+
+  llh_converter::LLA lla;
+  llh_converter::XYZ converted;
+  lla.latitude = test_lat;
+  lla.longitude = test_lon;
+  lla.altitude = 30.0;
+  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, converted.x, converted.y, converted.z, param);
+  double mca = llh_converter::getMeridianConvergence(lla, converted, llh_converter, param); // meridian convergence angle
+```
+
 ## Install
 
 ```
