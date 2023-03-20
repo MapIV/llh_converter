@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "llh_converter/meridian_convergence_angle_correction.hpp"
-// #include "llh_converter/llh_converter.hpp"
+#include "llh_converter/llh_converter.hpp"
 
 namespace llh_converter
 {
