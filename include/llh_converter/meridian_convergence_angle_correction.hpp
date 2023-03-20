@@ -40,33 +40,19 @@
 namespace llh_converter
 {
 
-enum class CoordinateSystem
+struct LLA
 {
-    UTM = 0,
-    MGRS = 1,
-    PLANE = 2,
-    LOCAL_CARTESIAN = 3,
-};
-
-struct GNSSStat
-{
-    GNSSStat()
-        : coordinate_system(CoordinateSystem::MGRS), northup(true), zone(0), x(0), y(0), z(0), latitude(0),
-          longitude(0), altitude(0)
-    {
-    }
-
-    CoordinateSystem coordinate_system;
-    bool northup;
-    int zone;
-    double x;
-    double y;
-    double z;
     double latitude;
     double longitude;
     double altitude;
 };
 
+struct XYZ
+{
+    double x;
+    double y;
+    double z;
+};
 
 struct Vector2d
 {
@@ -77,12 +63,6 @@ struct Vector2d
 double getDotNorm(Vector2d a, Vector2d b);
 
 double getCrossNorm(Vector2d a, Vector2d b);
-
-//void QuatMsg2RPY(const geometry_msgs::msg::Quaternion &quat_msg, double &roll, double &pitch, double &yaw);
-
-//void RPY2QuatMsg(const double &roll, const double &pitch, const double &yaw, geometry_msgs::msg::Quaternion &quat_msg);
-
-//geometry_msgs::msg::Quaternion RPY2QuatMsg(const double &roll, const double &pitch, const double &yaw);
 
 template <class T> inline T square(T val)
 {
@@ -104,7 +84,7 @@ template <class T> inline T rad2deg(T rad)
     return rad * boost::math::constants::radian<T>();
 }
 
-double getMeridianConvergence(const GNSSStat &lla, const GNSSStat &converted,
+double getMeridianConvergence(const LLA &lla, const XYZ &xyz,
     llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param);
 
 }  // namespace llh_converter

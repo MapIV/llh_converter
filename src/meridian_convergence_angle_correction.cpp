@@ -42,30 +42,30 @@ double getCrossNorm(Vector2d a, Vector2d b)
     return a.x * b.y - a.y * b.x;
 }
 
-double getMeridianConvergence(const GNSSStat &lla, const GNSSStat &converted, llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param)
+double getMeridianConvergence(const LLA &lla, const XYZ &xyz, llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param)
 {
 
-    GNSSStat offset_lla = lla;
-    GNSSStat offset_converted = converted;
+    LLA offset_lla = lla;
+    XYZ offset_xyz = xyz;
 
-    GNSSStat offset_lla_converted;
+    XYZ xyz_by_offset_lla;
 
-    offset_lla.latitude += 0.01;  // neary 1.11km
-    offset_converted.y += 1000.0; // 1km
+    offset_lla.latitude += 0.01;  // neary 1.11km. This value has no special meaning.
+    offset_xyz.y += 1000.0; // 1km. This value has no special meaning.
 
-    llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_lla_converted.x,
-                         offset_lla_converted.y, offset_lla_converted.z, llhc_param);
+    llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, xyz_by_offset_lla.x,
+                         xyz_by_offset_lla.y, xyz_by_offset_lla.z, llhc_param);
 
     Vector2d offset_converted_vec;
-    Vector2d offset_lla_converted_vec;
+    Vector2d xyz_by_offset_lla_converted_vec;
 
-    offset_converted_vec.x = offset_converted.x - converted.x;
-    offset_converted_vec.y = offset_converted.y - converted.y;
-    offset_lla_converted_vec.x = offset_lla_converted.x - converted.x;
-    offset_lla_converted_vec.y = offset_lla_converted.y - converted.y;
+    offset_converted_vec.x = offset_xyz.x - xyz.x;
+    offset_converted_vec.y = offset_xyz.y - xyz.y;
+    xyz_by_offset_lla_converted_vec.x = xyz_by_offset_lla.x - xyz.x;
+    xyz_by_offset_lla_converted_vec.y = xyz_by_offset_lla.y - xyz.y;
 
-    double dot_norm = getDotNorm(offset_converted_vec, offset_lla_converted_vec);
-    double cross_norm = getCrossNorm(offset_converted_vec, offset_lla_converted_vec);
+    double dot_norm = getDotNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
+    double cross_norm = getCrossNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
 
     return atan2(cross_norm, dot_norm);
 }
