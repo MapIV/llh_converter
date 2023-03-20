@@ -93,12 +93,12 @@ The meridian convergence angle is calculated by the `getMeridianConvergence()` f
   param.geoid_type = llh_converter::GeoidType::EGM2008;
 
   llh_converter::LLA lla;
-  llh_converter::XYZ converted;
+  llh_converter::XYZ xyz;
   lla.latitude = test_lat;
   lla.longitude = test_lon;
   lla.altitude = 30.0;
-  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, converted.x, converted.y, converted.z, param);
-  double mca = llh_converter::getMeridianConvergence(lla, converted, llh_converter, param); // meridian convergence angle
+  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, xyz.x, xyz.y, xyz.z, param);
+  double mca = llh_converter::getMeridianConvergence(lla, xyz, llh_converter, param); // meridian convergence angle
 ```
 
 ## Install

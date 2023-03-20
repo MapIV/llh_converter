@@ -31,9 +31,6 @@
 #ifndef M4_MERIDIAN_CONVERGENCE_ANGLE_CORRECTION_HPP
 #define M4_MERIDIAN_CONVERGENCE_ANGLE_CORRECTION_HPP
 
-#include <string>
-
-
 #include "llh_converter/llh_converter.hpp"
 #include <boost/math/constants/constants.hpp>
 

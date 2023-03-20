@@ -53,12 +53,12 @@ void meridian_convergence_angle_correction_test(const double& test_lat, const do
 )
 {
   llh_converter::LLA lla;
-  llh_converter::XYZ converted;
+  llh_converter::XYZ xyz;
   lla.latitude = test_lat;
   lla.longitude = test_lon;
   lla.altitude = 30.0;
-  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, converted.x, converted.y, converted.z, param);
-  double mca = llh_converter::getMeridianConvergence(lla, converted, llh_converter, param); // meridian convergence angle
+  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, xyz.x, xyz.y, xyz.z, param);
+  double mca = llh_converter::getMeridianConvergence(lla, xyz, llh_converter, param); // meridian convergence angle
   std::cout << "-------------------------------------------------------------------------------------" << std::endl;
   std::cout << "Testing LatLon (" << std::setw(6) << test_lat << ", " << std::setw(6) << test_lat << ") ... " << std::endl;
   std::cout << "Calcalated Meridian Convergence Angle (" << mca << ")" << std::endl;
