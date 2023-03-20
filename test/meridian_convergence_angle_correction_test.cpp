@@ -63,11 +63,12 @@ int main(int argc, char** argv)
   // nagoya city ueda
   double test_lat = 35.141168610, test_lon = 136.989591759;
   double answered_angle = -0.101925000; // [deg]
-  llh_converter::GNSSStat lla, conveterd;
+  llh_converter::GNSSStat lla, converted;
   lla.latitude = test_lat;
   lla.longitude = test_lon;
   lla.altitude = 30.0;
-  double mca = llh_converter::getMeridianConvergence(lla, conveterd, llh_converter, param);
+  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, converted.x, converted.y, converted.z, param);
+  double mca = llh_converter::getMeridianConvergence(lla, converted, llh_converter, param);
   std::cout << "Testing (" << std::setw(6) << test_lat << ", " << std::setw(6) << test_lat << ") ... " << std::endl;
   std::cout << "Meridian Convergence Angle (" << mca << ")" << std::endl;
   test(llh_converter::rad2deg(mca), answered_angle);
