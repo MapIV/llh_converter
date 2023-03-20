@@ -28,15 +28,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef M4_HEIGHT_CONVERTER_HPP
-#define M4_HEIGHT_CONVERTER_HPP
+#ifndef M4_MERIDIAN_CONVERGENCE_ANGLE_CORRECTION_HPP
+#define M4_MERIDIAN_CONVERGENCE_ANGLE_CORRECTION_HPP
 
 #include <string>
 
-#include <GeographicLib/Geoid.hpp>
 
-#include "llh_converter/gsigeo.hpp"
-
+#include "llh_converter/llh_converter.hpp"
 #include <boost/math/constants/constants.hpp>
 
 namespace llh_converter
@@ -106,7 +104,8 @@ template <class T> inline T rad2deg(T rad)
     return rad * boost::math::constants::radian<T>();
 }
 
-// double getMeridianConvergence(const GNSSStat &lla, const GNSSStat &converted);
+double getMeridianConvergence(const GNSSStat &lla, const GNSSStat &converted,
+    llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param);
 
 }  // namespace llh_converter
 

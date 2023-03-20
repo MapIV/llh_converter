@@ -41,9 +41,9 @@ add_library(meridian_convergence_angle_correction SHARED
 target_link_libraries(meridian_convergence_angle_correction PUBLIC ${catkin_LIBRARIES} llh_converter)
 add_dependencies(meridian_convergence_angle_correction ${catkin_EXPORTED_TARGETS} llh_converter)
 
-# add_executable(mcac_test test/meridian_convergence_angle_correction_test.cpp)
-# target_link_libraries(mcac_test ${catkin_LIBRARIES} meridian_convergence_angle_correction)
-# add_dependencies(mcac_test ${catkin_EXPORTED_TARGETS})
+add_executable(mcac_test test/meridian_convergence_angle_correction_test.cpp)
+target_link_libraries(mcac_test ${catkin_LIBRARIES} meridian_convergence_angle_correction)
+add_dependencies(mcac_test ${catkin_EXPORTED_TARGETS})
 
 install(DIRECTORY include/llh_converter/
   DESTINATION include/llh_converter

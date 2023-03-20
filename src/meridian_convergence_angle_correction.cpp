@@ -29,7 +29,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "llh_converter/meridian_convergence_angle_correction.hpp"
-#include "llh_converter/llh_converter.hpp"
 
 namespace llh_converter
 {
@@ -43,34 +42,32 @@ double getCrossNorm(Vector2d a, Vector2d b)
     return a.x * b.y - a.y * b.x;
 }
 
-// double getMeridianConvergence(const GNSSStat &lla, const GNSSStat &converted)
-// {
-//     llh_converter::LLHConverter llhc_; // tmp
-//     llh_converter::LLHParam llhc_param_; // tmp
+double getMeridianConvergence(const GNSSStat &lla, const GNSSStat &converted, llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param)
+{
 
-//     GNSSStat offset_lla = lla;
-//     GNSSStat offset_converted = converted;
+    GNSSStat offset_lla = lla;
+    GNSSStat offset_converted = converted;
 
-//     GNSSStat offset_lla_converted;
+    GNSSStat offset_lla_converted;
 
-//     offset_lla.latitude += 0.01;  // neary 1.11km
-//     offset_converted.y += 1000.0; // 1km
+    offset_lla.latitude += 0.01;  // neary 1.11km
+    offset_converted.y += 1000.0; // 1km
 
-//     llhc_.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_lla_converted.x,
-//                          offset_lla_converted.y, offset_lla_converted.z, llhc_param_);
+    llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_lla_converted.x,
+                         offset_lla_converted.y, offset_lla_converted.z, llhc_param);
 
-//     Vector2d offset_converted_vec;
-//     Vector2d offset_lla_converted_vec;
+    Vector2d offset_converted_vec;
+    Vector2d offset_lla_converted_vec;
 
-//     offset_converted_vec.x = offset_converted.x - converted.x;
-//     offset_converted_vec.y = offset_converted.y - converted.y;
-//     offset_lla_converted_vec.x = offset_lla_converted.x - converted.x;
-//     offset_lla_converted_vec.y = offset_lla_converted.y - converted.y;
+    offset_converted_vec.x = offset_converted.x - converted.x;
+    offset_converted_vec.y = offset_converted.y - converted.y;
+    offset_lla_converted_vec.x = offset_lla_converted.x - converted.x;
+    offset_lla_converted_vec.y = offset_lla_converted.y - converted.y;
 
-//     double dot_norm = getDotNorm(offset_converted_vec, offset_lla_converted_vec);
-//     double cross_norm = getCrossNorm(offset_converted_vec, offset_lla_converted_vec);
+    double dot_norm = getDotNorm(offset_converted_vec, offset_lla_converted_vec);
+    double cross_norm = getCrossNorm(offset_converted_vec, offset_lla_converted_vec);
 
-//     return atan2(cross_norm, dot_norm);
-// }
+    return atan2(cross_norm, dot_norm);
+}
 
 }  // namespace llh_converter

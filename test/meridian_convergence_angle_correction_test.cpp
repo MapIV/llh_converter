@@ -29,6 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "llh_converter/meridian_convergence_angle_correction.hpp"
+#include "llh_converter/llh_converter.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -49,9 +50,27 @@ void test(const double& result, const double& answer)
 
 int main(int argc, char** argv)
 {
+  // Meridian Convergence Angle Correction Test
+  llh_converter::LLHConverter llh_converter;
+  llh_converter::LLHParam param;
+  param.use_mgrs = false;
+  param.plane_num = 7;
+  param.height_convert_type = llh_converter::ConvertType::NONE;
+  param.geoid_type = llh_converter::GeoidType::EGM2008;
 
-  std::cout << "Testing (" << std::setw(6) << 35 << ", " << std::setw(6) << 135 << ") ... ";
-  test(37.0557, 37.0557);
+  // ref: Conversion to plane rectangular coordinates(in Japanse)
+  // https://vldb.gsi.go.jp/sokuchi/surveycalc/surveycalc/bl2xyf.html
+  // nagoya city ueda
+  double test_lat = 35.141168610, test_lon = 136.989591759;
+  double answered_angle = -0.101925000; // [deg]
+  llh_converter::GNSSStat lla, conveterd;
+  lla.latitude = test_lat;
+  lla.longitude = test_lon;
+  lla.altitude = 30.0;
+  double mca = llh_converter::getMeridianConvergence(lla, conveterd, llh_converter, param);
+  std::cout << "Testing (" << std::setw(6) << test_lat << ", " << std::setw(6) << test_lat << ") ... " << std::endl;
+  std::cout << "Meridian Convergence Angle (" << mca << ")" << std::endl;
+  test(llh_converter::rad2deg(mca), answered_angle);
 
   return 0;
 }
