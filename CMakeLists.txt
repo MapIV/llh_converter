@@ -28,6 +28,7 @@ add_library(llh_converter SHARED
   src/height_converter.cpp
   src/gsigeo.cpp
   src/llh_converter.cpp
+  src/meridian_convergence_angle_correction.cpp
 )
 target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
 
@@ -35,14 +36,8 @@ add_executable(llh_test test/height_converter_test.cpp)
 target_link_libraries(llh_test ${catkin_LIBRARIES} llh_converter)
 add_dependencies(llh_test ${catkin_EXPORTED_TARGETS})
 
-add_library(meridian_convergence_angle_correction SHARED
-  src/meridian_convergence_angle_correction.cpp
-)
-target_link_libraries(meridian_convergence_angle_correction PUBLIC ${catkin_LIBRARIES} llh_converter)
-add_dependencies(meridian_convergence_angle_correction ${catkin_EXPORTED_TARGETS} llh_converter)
-
 add_executable(mcac_test test/meridian_convergence_angle_correction_test.cpp)
-target_link_libraries(mcac_test ${catkin_LIBRARIES} meridian_convergence_angle_correction)
+target_link_libraries(mcac_test ${catkin_LIBRARIES} llh_converter)
 add_dependencies(mcac_test ${catkin_EXPORTED_TARGETS})
 
 install(DIRECTORY include/llh_converter/
