@@ -61,19 +61,9 @@ double getDotNorm(Vector2d a, Vector2d b);
 
 double getCrossNorm(Vector2d a, Vector2d b);
 
-template <class T> inline T square(T val)
-{
-    return val * val;
-}
-
 template <class T> inline T deg2rad(T deg)
 {
     return deg * boost::math::constants::degree<T>();
-}
-
-template <class T> inline T deg2radSq(T deg)
-{
-    return deg * boost::math::constants::degree<T>() * boost::math::constants::degree<T>();
 }
 
 template <class T> inline T rad2deg(T rad)

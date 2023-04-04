@@ -67,7 +67,7 @@ double getMeridianConvergence(const LLA &lla, const XYZ &xyz, llh_converter::LLH
     double dot_norm = getDotNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
     double cross_norm = getCrossNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
 
-    return atan2(cross_norm, dot_norm);
+    return std::atan2(cross_norm, dot_norm);
 }
 
 }  // namespace llh_converter
