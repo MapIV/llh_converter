@@ -33,9 +33,11 @@ ament_auto_add_library(llh_converter SHARED
   src/height_converter.cpp
   src/gsigeo.cpp
   src/llh_converter.cpp
+  src/meridian_convergence_angle_correction.cpp
   include/llh_converter/height_converter.hpp
   include/llh_converter/gsigeo.hpp
   include/llh_converter/llh_converter.hpp
+  include/llh_converter/meridian_convergence_angle_correction.hpp
 )
 
 target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
@@ -80,8 +82,13 @@ install(TARGETS
   )
 
 ament_auto_add_executable(llh_test test/height_converter_test.cpp)
+ament_auto_add_executable(mcac_test test/meridian_convergence_angle_correction_test.cpp)
 
 install(TARGETS llh_test
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS mcac_test
   DESTINATION lib/${PROJECT_NAME}
 )
 
