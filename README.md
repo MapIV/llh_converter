@@ -7,6 +7,8 @@ This repository has two class implementation.
 * HeightConverter
 * LLHConverter
 
+There is also a function for the Meridian convergence angle correction.
+
 ---
 
 ## HeightConverter
@@ -70,6 +72,35 @@ lc.convertRad2XYZ(lat_rad, lon_rad, alt, x, y, z, param);
 
 lc.revertXYZ2Deg(x, y, lat_deg, lon_deg, param);
 lc.revertXYZ2Rad(x, y, lat_rad, lon_rad, param);
+```
+
+---
+
+## meridian convergence angle correction
+
+The meridian convergence angle is the angle of difference between true north and coordinate north.
+
+The meridian convergence angle is calculated by the `getMeridianConvergence()` function.
+
+<img src="docs/meridian_convergence_angle.png" width="750">
+
+### Usage
+
+```
+  llh_converter::LLHConverter lc;
+  llh_converter::LLHParam param;
+  param.use_mgrs = false;
+  param.plane_num = 7;
+  param.height_convert_type = llh_converter::ConvertType::NONE;
+  param.geoid_type = llh_converter::GeoidType::EGM2008;
+
+  llh_converter::LLA lla;
+  llh_converter::XYZ xyz;
+  lla.latitude = test_lat;
+  lla.longitude = test_lon;
+  lla.altitude = 30.0;
+  llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, xyz.x, xyz.y, xyz.z, param);
+  double mca = llh_converter::getMeridianConvergence(lla, xyz, llh_converter, param); // meridian convergence angle
 ```
 
 ---
