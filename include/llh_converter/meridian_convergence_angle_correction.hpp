@@ -32,7 +32,6 @@
 #define M4_MERIDIAN_CONVERGENCE_ANGLE_CORRECTION_HPP
 
 #include "llh_converter/llh_converter.hpp"
-#include <boost/math/constants/constants.hpp>
 
 namespace llh_converter
 {
@@ -63,12 +62,12 @@ double getCrossNorm(Vector2d a, Vector2d b);
 
 template <class T> inline T deg2rad(T deg)
 {
-    return deg * boost::math::constants::degree<T>();
+    return deg * (static_cast<T>(M_PI) / 180);
 }
 
 template <class T> inline T rad2deg(T rad)
 {
-    return rad * boost::math::constants::radian<T>();
+    return rad * (180 / static_cast<T>(M_PI));
 }
 
 double getMeridianConvergence(const LLA &lla, const XYZ &xyz,
