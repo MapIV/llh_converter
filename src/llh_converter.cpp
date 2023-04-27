@@ -67,7 +67,6 @@ LLHConverter::LLHConverter(const std::string& geoid_file)
                                                  { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
 }
 
-
 // Public fumember functions
 void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y,
                                   double& z, const LLHParam& param)
