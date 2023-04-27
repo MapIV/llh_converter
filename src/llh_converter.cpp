@@ -57,6 +57,17 @@ LLHConverter::LLHConverter()
                                                  { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
 }
 
+LLHConverter::LLHConverter(const std::string& geoid_file)
+{
+  height_converter_.loadGSIGEOGeoidFile(geoid_file);
+  mgrs_alphabet_ = makeBimap<std::string, int>({ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
+                                                 { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
+                                                 { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
+                                                 { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
+                                                 { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
+}
+
+
 // Public fumember functions
 void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y,
                                   double& z, const LLHParam& param)
