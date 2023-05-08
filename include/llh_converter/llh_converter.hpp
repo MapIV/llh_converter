@@ -124,7 +124,7 @@ private:
   void setPlaneNum(int plane_num);
 
   boost::bimaps::bimap<std::string, int> mgrs_alphabet_;
-  void initializeMgrsAlphabet();
+  void initializeMGRSAlphabet();
 };
 }  // namespace llh_converter
 

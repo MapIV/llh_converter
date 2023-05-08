@@ -50,13 +50,13 @@ makeBimap(std::initializer_list<typename boost::bimaps::bimap<L, R>::value_type>
 LLHConverter::LLHConverter()
 {
   height_converter_.loadGSIGEOGeoidFile();
-  initializeMgrsAlphabet();
+  initializeMGRSAlphabet();
 }
 
 LLHConverter::LLHConverter(const std::string& geoid_file)
 {
   height_converter_.loadGSIGEOGeoidFile(geoid_file);
-  initializeMgrsAlphabet();
+  initializeMGRSAlphabet();
 }
 
 // Public fumember functions
@@ -620,7 +620,7 @@ void LLHConverter::setPlaneNum(int plane_num)
   plane_lon_rad_ = M_PI * ((double)lon_deg + (double)lon_min / 60.0) / 180.0;
 }
 
-void LLHConverter::initializeMgrsAlphabet()
+void LLHConverter::initializeMGRSAlphabet()
 {
     mgrs_alphabet_ = makeBimap<std::string, int>({ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
                                                    { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
