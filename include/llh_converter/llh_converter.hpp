@@ -67,6 +67,7 @@ class LLHConverter
 {
 public:
   LLHConverter();
+  LLHConverter(const std::string& geoid_file);
 
   void convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y, double& z,
                       const LLHParam& param);
@@ -123,6 +124,7 @@ private:
   void setPlaneNum(int plane_num);
 
   boost::bimaps::bimap<std::string, int> mgrs_alphabet_;
+  void initializeMGRSAlphabet();
 };
 }  // namespace llh_converter
 

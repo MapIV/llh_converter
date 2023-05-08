@@ -50,11 +50,13 @@ makeBimap(std::initializer_list<typename boost::bimaps::bimap<L, R>::value_type>
 LLHConverter::LLHConverter()
 {
   height_converter_.loadGSIGEOGeoidFile();
-  mgrs_alphabet_ = makeBimap<std::string, int>({ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
-                                                 { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
-                                                 { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
-                                                 { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
-                                                 { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
+  initializeMGRSAlphabet();
+}
+
+LLHConverter::LLHConverter(const std::string& geoid_file)
+{
+  height_converter_.loadGSIGEOGeoidFile(geoid_file);
+  initializeMGRSAlphabet();
 }
 
 // Public fumember functions
@@ -616,5 +618,14 @@ void LLHConverter::setPlaneNum(int plane_num)
   // swap longitude and latitude
   plane_lat_rad_ = M_PI * ((double)lat_deg + (double)lat_min / 60.0) / 180.0;
   plane_lon_rad_ = M_PI * ((double)lon_deg + (double)lon_min / 60.0) / 180.0;
+}
+
+void LLHConverter::initializeMGRSAlphabet()
+{
+    mgrs_alphabet_ = makeBimap<std::string, int>({ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
+                                                   { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
+                                                   { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
+                                                   { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
+                                                   { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
 }
 }  // namespace llh_converter
