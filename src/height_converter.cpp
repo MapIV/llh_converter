@@ -69,6 +69,8 @@ double HeightConverter::getGeoidDeg(const double& lat_deg, const double& lon_deg
       return getGeoidEGM2008(lat_deg, lon_deg);
     case GeoidType::GSIGEO2011:
       return getGeoidGSIGEO2011(lat_deg, lon_deg);
+    default:
+      throw std::invalid_argument("Invalid geoid type");
   }
 }
 
