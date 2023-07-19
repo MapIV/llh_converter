@@ -71,7 +71,7 @@ int main(int argc, char** argv)
   // Meridian Convergence Angle Correction Test
   llh_converter::LLHConverter llh_converter;
   llh_converter::LLHParam param;
-  param.use_mgrs = false;
+  param.projection = llh_converter::Projection::JPRCS;
   param.plane_num = 7;
   param.height_convert_type = llh_converter::ConvertType::NONE;
   param.geoid_type = llh_converter::GeoidType::EGM2008;

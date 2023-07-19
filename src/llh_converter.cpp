@@ -73,14 +73,18 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
                                   double& z, const LLHParam& param)
 {
   // Convert lat/lon to x/y
-  if (param.use_mgrs)
+  if (param.projection == Projection::MGRS)
   {
     convRad2MGRS(lat_rad, lon_rad, x, y);
   }
-  else
+  else if (param.projection == Projection::JPRCS)
   {
     setPlaneNum(param.plane_num);
     convRad2JPRCS(lat_rad, lon_rad, x, y);
+  }
+  else
+  {
+    convRad2UTM(lat_rad, lon_rad, x, y);
   }
 
   // Convert h to z
@@ -101,15 +105,20 @@ void LLHConverter::revertXYZ2Rad(const double& x, const double& y, double& lat_r
                                  const LLHParam& param)
 {
   // Revert lat/lon to x/y
-  if (param.use_mgrs)
+  if (param.projection == Projection::MGRS)
   {
-    mgrs_code_ = param.mgrs_code;
+    grid_code_ = param.grid_code;
     revMGRS2Rad(x, y, lat_rad, lon_rad);
   }
-  else
+  else if (param.projection == Projection::JPRCS)
   {
     setPlaneNum(param.plane_num);
     revJPRCS2Rad(x, y, lat_rad, lon_rad);
+  }
+  else
+  {
+    grid_code_ = param.grid_code;
+    revUTM2Rad(x, y, lat_rad, lon_rad);
   }
 }
 
@@ -117,7 +126,7 @@ void LLHConverter::convertMGRS2JPRCS(const double& m_x, const double& m_y, doubl
                                      const LLHParam& param)
 {
   double lat_rad, lon_rad;
-  mgrs_code_ = param.mgrs_code;
+  grid_code_ = param.grid_code;
   revMGRS2Rad(m_x, m_y, lat_rad, lon_rad);
 
   setPlaneNum(param.plane_num);
@@ -144,16 +153,21 @@ void LLHConverter::getMapOriginDeg(double& lat_deg, double& lon_deg, const LLHPa
 
 void LLHConverter::getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param)
 {
-  if (param.use_mgrs)
+  if (param.projection == Projection::MGRS)
   {
-    mgrs_code_ = param.mgrs_code;
+    grid_code_ = param.grid_code;
     revMGRS2Rad(0, 0, lat_rad, lon_rad);
   }
-  else
+  else if (param.projection == Projection::JPRCS)
   {
     setPlaneNum(param.plane_num);
     lat_rad = plane_lat_rad_;
     lon_rad = plane_lon_rad_;
+  }
+  else
+  {
+    grid_code_ = param.grid_code;
+    revUTM2Rad(0, 0, lat_rad, lon_rad);
   }
 }
 
@@ -319,30 +333,30 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
 
   // UTM to MGRS
   int mgrs_zone;
-  std::string mgrs_code;
+  std::string grid_code;
 
   try
   {
-    GeographicLib::MGRS::Forward(utm_zone, utm_northup, utx, uty, lat_deg, static_cast<int>(precision_), mgrs_code);
-    mgrs_zone = std::stod(mgrs_code.substr(0, grid_code_size_));
+    GeographicLib::MGRS::Forward(utm_zone, utm_northup, utx, uty, lat_deg, static_cast<int>(precision_), grid_code);
+    mgrs_zone = std::stod(grid_code.substr(0, grid_code_size_));
     double map_rate = std::pow(10, static_cast<int>(MGRSPrecision::METER_1) - static_cast<int>(precision_));
-    x = std::stod(mgrs_code.substr(grid_code_size_, static_cast<int>(precision_))) * map_rate;
-    y = std::stod(mgrs_code.substr(grid_code_size_ + static_cast<int>(precision_), static_cast<int>(precision_))) *
+    x = std::stod(grid_code.substr(grid_code_size_, static_cast<int>(precision_))) * map_rate;
+    y = std::stod(grid_code.substr(grid_code_size_ + static_cast<int>(precision_), static_cast<int>(precision_))) *
         map_rate;
 
     if (use_origin_zone_)
     {
       if (!is_origin_set_)
       {
-        mgrs_code_ = mgrs_code.substr(0, grid_code_size_);
-        origin_x_zone_ = mgrs_code.substr(3, 1);
-        origin_y_zone_ = mgrs_code.substr(4, 1);
+        grid_code_ = grid_code.substr(0, grid_code_size_);
+        origin_x_zone_ = grid_code.substr(3, 1);
+        origin_y_zone_ = grid_code.substr(4, 1);
         is_origin_set_ = true;
       }
       else
       {
-        std::string x_zone = mgrs_code.substr(3, 1);
-        std::string y_zone = mgrs_code.substr(4, 1);
+        std::string x_zone = grid_code.substr(3, 1);
+        std::string y_zone = grid_code.substr(4, 1);
 
         x += 100000 * checkCrossBoader(origin_x_zone_, x_zone, true);
         y += 100000 * checkCrossBoader(origin_y_zone_, y_zone, false);
@@ -363,15 +377,15 @@ void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad
 
   if (x_cross_num != 0)
   {
-    std::string x_zone = mgrs_code_.substr(3, 1);
+    std::string x_zone = grid_code_.substr(3, 1);
     x_zone = getOffsetZone(x_zone, x_cross_num);
-    mgrs_code_.replace(3, 1, x_zone);
+    grid_code_.replace(3, 1, x_zone);
   }
   if (y_cross_num != 0)
   {
-    std::string y_zone = mgrs_code_.substr(4, 1);
+    std::string y_zone = grid_code_.substr(4, 1);
     y_zone = getOffsetZone(y_zone, y_cross_num);
-    mgrs_code_.replace(4, 1, y_zone);
+    grid_code_.replace(4, 1, y_zone);
   }
 
   std::ostringstream mgrs_x_code, mgrs_y_code;
@@ -379,7 +393,7 @@ void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad
   mgrs_x_code << std::setw(digit_number) << std::setfill('0') << std::to_string(static_cast<int>(x_in_grid * 100));
   mgrs_y_code << std::setw(digit_number) << std::setfill('0') << std::to_string(static_cast<int>(y_in_grid * 100));
 
-  std::string mgrs_code = mgrs_code_ + mgrs_x_code.str() + mgrs_y_code.str();
+  std::string grid_code = grid_code_ + mgrs_x_code.str() + mgrs_y_code.str();
 
   try
   {
@@ -387,7 +401,7 @@ void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad
     bool northup;
     double utm_x, utm_y;
     double lat_deg, lon_deg;
-    GeographicLib::MGRS::Reverse(mgrs_code, zone, northup, utm_x, utm_y, prec);
+    GeographicLib::MGRS::Reverse(grid_code, zone, northup, utm_x, utm_y, prec);
     GeographicLib::UTMUPS::Reverse(zone, northup, utm_x, utm_y, lat_deg, lon_deg);
     lat_rad = lat_deg * M_PI / 180.;
     lon_rad = lon_deg * M_PI / 180.;
@@ -397,6 +411,47 @@ void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad
     std::cerr << "\033[31;1mGeographicLib Error: Failed to revert MGRS to lat/lon" << std::endl;
     exit(EXIT_FAILURE);
   }
+}
+
+void LLHConverter::convRad2UTM(const double& lat_rad, const double& lon_rad, double& x, double& y)
+{
+  int utm_zone;
+  bool utm_northup;
+
+  double lat_deg = lat_rad * 180. / M_PI;
+  double lon_deg = lon_rad * 180. / M_PI;
+  
+  try
+  {
+    GeographicLib::UTMUPS::Forward(lat_deg, lon_deg, utm_zone, utm_northup, x, y);
+  }
+  catch (const GeographicLib::GeographicErr err)
+  {
+    std::cerr << "\033[31;1mGeographicLib Error: Failed to convert LLH to UTM: " << err.what() << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  grid_code_ = std::to_string(utm_zone);
+}
+
+void LLHConverter::revUTM2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad)
+{
+  int utm_zone = std::stoi(grid_code_);
+  bool northp = true;
+  double lat_deg, lon_deg;
+
+  try
+  {
+    GeographicLib::UTMUPS::Reverse(utm_zone, northp, x, y, lat_deg, lon_deg);
+  }
+  catch (const GeographicLib::GeographicErr err)
+  {
+    std::cerr << "\033[31;1mGeographicLib Error: Failed to revert MGRS to lat/lon" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  lat_rad = lat_deg * M_PI / 180.;
+  lon_rad = lon_deg * M_PI / 180.;
 }
 
 std::pair<int, double> LLHConverter::getCrossNum(const double& x)
@@ -478,6 +533,7 @@ int LLHConverter::checkCrossBoader(const std::string& code_origin, const std::st
 
 void LLHConverter::setPlaneNum(int plane_num)
 {
+  grid_code_ = std::to_string(plane_num);
   // longitude and latitude of origin of each plane in Japan
   int lon_deg, lon_min, lat_deg, lat_min;
 

@@ -51,14 +51,12 @@ Convert latitude/longitude/altitude into XYZ coordinate system.
 
 ```
 llh_converter::LLHConverter lc;
-llh_converter::LLHParam param;  // parameter for conversion
-param.use_mgrs = true;          // set true if you want to use MGRS
-param.plane_num = 9;            // set the plane number when you use JPRCS
-param.mgrs_code = "53SPU";      // MGRS grid code is required when you revert MGRS x/y into lat/lon
-param.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
-                                // You can also convert height
-param.geoid_type = llh_converter::GeoidType::EGM2008;
-                                // Set geoid model
+llh_converter::LLHParam param;                                        // parameter for conversion
+param.projection = llh_converter::Projection::MGRS;                   // UTM, MGRS, JPRCS
+param.plane_num = 9;                                                  // set the plane number when you use JPRCS
+param.mgrs_code = "53SPU";                                            // MGRS grid code is required when you revert MGRS x/y into lat/lon
+param.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO; // You can also convert height
+param.geoid_type = llh_converter::GeoidType::EGM2008;                 // Set geoid model
 
 double lat_deg, lon_deg, alt;
 double lat_rad = lat_deg * M_PI / 180.;
@@ -87,7 +85,7 @@ The meridian convergence angle is calculated by the `getMeridianConvergence()` f
 ```
   llh_converter::LLHConverter lc;
   llh_converter::LLHParam param;
-  param.use_mgrs = false;
+  param.projection = llh_converter::Projection::JPRCS;
   param.plane_num = 7;
   param.height_convert_type = llh_converter::ConvertType::NONE;
   param.geoid_type = llh_converter::GeoidType::EGM2008;

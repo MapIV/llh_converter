@@ -53,11 +53,18 @@ enum class MGRSPrecision
   MICRO_METER_100 = 9,
 };
 
+enum class Projection
+{
+  UTM = 0,
+  MGRS = 1,
+  JPRCS = 2,
+};
+
 struct LLHParam
 {
-  bool use_mgrs;
+  Projection projection;
   int plane_num;
-  std::string mgrs_code;
+  std::string grid_code;
   // MGRSPrecision precision;
   ConvertType height_convert_type;
   GeoidType geoid_type;
@@ -82,18 +89,18 @@ public:
   void getMapOriginDeg(double& lat_rad, double& lon_rad, const LLHParam& param);
   void getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param);
 
-  std::string getMGRSGridCode()
+  std::string getGridCode()
   {
-    return mgrs_code_;
+    return grid_code_;
   }
-  void setMGRSGridCode(const std::string& mgrs_code)
+  void setGridCode(const std::string& grid_code)
   {
-    mgrs_code_ = mgrs_code;
+    grid_code_ = grid_code;
   }
 
 private:
   double plane_lat_rad_, plane_lon_rad_;
-  std::string mgrs_code_;
+  std::string grid_code_;
   std::string origin_x_zone_, origin_y_zone_;
 
   bool use_origin_zone_ = true;
@@ -116,6 +123,9 @@ private:
   // MGRS
   void convRad2MGRS(const double& lat_rad, const double& lon_rad, double& x, double& y);
   void revMGRS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
+  // UTM
+  void convRad2UTM(const double& lat_rad, const double& lon_rad, double& x, double& y);
+  void revUTM2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
 
   std::pair<int, double> getCrossNum(const double& x);
   std::string getOffsetZone(const std::string& zone, const int& offset);
