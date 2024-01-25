@@ -1,6 +1,6 @@
 #include <llh_converter_python/llh_converter_python.h>
 
-PYBIND11_MODULE(llh_converter_python, m) {
+PYBIND11_MODULE(llh_converter, m) {
   m.doc() = "Python wrapper for llh_converter";
 
   // Wrapper for class GSIGEO2011
@@ -73,16 +73,64 @@ PYBIND11_MODULE(llh_converter_python, m) {
   py::class_<llh_converter::LLHConverter>(m, "LLHConverter")
       .def(py::init<>())
       .def(py::init<const std::string &>())
-      .def("convert_deg2xyz", &llh_converter::LLHConverter::convertDeg2XYZ)
-      .def("convert_rad2xyz", &llh_converter::LLHConverter::convertRad2XYZ)
-      .def("revert_xyz2deg", &llh_converter::LLHConverter::revertXYZ2Deg)
-      .def("revert_xyz2rad", &llh_converter::LLHConverter::revertXYZ2Rad)
+      .def("convert_deg2xyz",
+           [](llh_converter::LLHConverter &self, const double &lat_deg,
+              const double &lon_deg, const double &h,
+              const llh_converter::LLHParam &param) {
+             double x, y, z;
+             self.convertDeg2XYZ(lat_deg, lon_deg, h, x, y, z, param);
+             return std::make_tuple(x, y, z);
+           })
+      .def("convert_rad2xyz",
+           [](llh_converter::LLHConverter &self, const double &lat_rad,
+              const double &lon_rad, const double &h,
+              const llh_converter::LLHParam &param) {
+             double x, y, z;
+             self.convertRad2XYZ(lat_rad, lon_rad, h, x, y, z, param);
+             return std::make_tuple(x, y, z);
+           })
+      .def("revert_xyz2deg",
+           [](llh_converter::LLHConverter &self, const double &x,
+              const double &y, const llh_converter::LLHParam &param) {
+             double lat_deg, lon_deg;
+             self.revertXYZ2Deg(x, y, lat_deg, lon_deg, param);
+             return std::make_tuple(lat_deg, lon_deg);
+           })
+      .def("revert_xyz2rad",
+           [](llh_converter::LLHConverter &self, const double &x,
+              const double &y, const llh_converter::LLHParam &param) {
+             double lat_rad, lon_rad;
+             self.revertXYZ2Rad(x, y, lat_rad, lon_rad, param);
+             return std::make_tuple(lat_rad, lon_rad);
+           })
       .def("convert_mgrs2jprcs",
-           &llh_converter::LLHConverter::convertMGRS2JPRCS)
+           [](llh_converter::LLHConverter &self, const double &m_x,
+              const double &m_y, const llh_converter::LLHParam &param) {
+             double j_x, j_y;
+             self.convertMGRS2JPRCS(m_x, m_y, j_x, j_y, param);
+             return std::make_tuple(j_x, j_y);
+           })
       .def("convert_jprcs2mgrs",
-           &llh_converter::LLHConverter::convertJPRCS2MGRS)
-      .def("get_map_origin_deg", &llh_converter::LLHConverter::getMapOriginDeg)
-      .def("get_map_origin_rad", &llh_converter::LLHConverter::getMapOriginRad)
+           [](llh_converter::LLHConverter &self, const double &j_x,
+              const double &j_y, const llh_converter::LLHParam &param) {
+             double m_x, m_y;
+             self.convertJPRCS2MGRS(j_x, j_y, m_x, m_y, param);
+             return std::make_tuple(m_x, m_y);
+           })
+      .def("get_map_origin_deg",
+           [](llh_converter::LLHConverter &self,
+              const llh_converter::LLHParam &param) {
+             double lat_deg, lon_deg;
+             self.getMapOriginDeg(lat_deg, lon_deg, param);
+             return std::make_tuple(lat_deg, lon_deg);
+           })
+      .def("get_map_origin_rad",
+           [](llh_converter::LLHConverter &self,
+              const llh_converter::LLHParam &param) {
+             double lat_rad, lon_rad;
+             self.getMapOriginRad(lat_rad, lon_rad, param);
+             return std::make_tuple(lat_rad, lon_rad);
+           })
       .def("get_mgrs_grid_code", &llh_converter::LLHConverter::getMGRSGridCode)
       .def("set_mgrs_grid_code", &llh_converter::LLHConverter::setMGRSGridCode);
 }
