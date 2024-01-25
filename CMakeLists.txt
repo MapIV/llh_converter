@@ -20,6 +20,11 @@ add_library(llh_converter SHARED
 target_include_directories(llh_converter PRIVATE include)
 target_link_libraries(llh_converter PUBLIC ${GeographicLib_LIBRARY})
 
+# Alias for the library target
+add_library(llh_converter::llh_converter ALIAS llh_converter)
+# Export the cmake config files for the build tree (this allows other projects to use this project without installing it)
+export(TARGETS llh_converter NAMESPACE llh_converter:: FILE llh_converterTargets.cmake)
+
 # Installation for the headers
 install(DIRECTORY include/llh_converter/
   DESTINATION include/llh_converter
@@ -39,3 +44,11 @@ install(EXPORT llh_converterTargets
   FILE llh_converterTargets.cmake
   DESTINATION lib/cmake/llh_converter
 )
+
+# Option to build Python bindings (default: OFF)
+option(BUILD_PYTHON_BINDINGS "Build Python bindings for the llh_converter library" OFF)
+
+# Include Python bindings if the option is turned on
+if(BUILD_PYTHON_BINDINGS)
+    add_subdirectory(python)
+endif()
