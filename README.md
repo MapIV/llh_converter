@@ -104,18 +104,24 @@ The meridian convergence angle is calculated by the `getMeridianConvergence()` f
 ## Install
 
 ```
+# Install geographiclib
 sudo apt update
 sudo apt install libgeographic-dev geographiclib-tools geographiclib-doc
 
+# Install geographiclib data
 sudo geographiclib-get-geoids best
-
-mkdir -p test_ws/src
-cd test_ws/src/
-git clone https://github.com/MapIV/height_converter.git
 sudo mkdir /usr/share/GSIGEO
 sudo cp llh_converter/data/gsigeo2011_ver2_1.asc /usr/share/GSIGEO/
-cd ../../
-catkin_make -DCMAKE_BUILD_TYPE=Release
+
+# Install llh_converter C++ library
+mkdir build
+cd build
+cmake ..
+make -j
+sudo make install
+
+# Install llh_converter python library (no need to install C++ library first)
+pip install .
 ```
 
 ## Geoid model data
