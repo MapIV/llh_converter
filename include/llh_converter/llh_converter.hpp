@@ -91,6 +91,8 @@ public:
     mgrs_code_ = mgrs_code;
   }
 
+  double getMeridianConvergenceRad(const double x, const double y, const LLHParam& param);
+
 private:
   double plane_lat_rad_, plane_lon_rad_;
   std::string mgrs_code_;

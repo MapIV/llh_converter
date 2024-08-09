@@ -32,42 +32,46 @@
 
 namespace llh_converter
 {
-double getDotNorm(Vector2d a, Vector2d b)
+double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param)
 {
-    return a.x * b.x + a.y * b.y;
+  LLA offset_lla = lla;
+  XYZ offset_by_cartesian = xyz;
+
+  XYZ offset_by_geodetic;
+
+  offset_lla.latitude += 0.01;  // neary 1.11km. This value has no special meaning.
+  offset_by_cartesian.y += 1000.0; // 1km. This value has no special meaning.
+
+  llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_by_geodetic.x,
+                       offset_by_geodetic.y, offset_by_geodetic.z, llhc_param);
+
+  double cartesian_diff_x = offset_by_cartesian.x - xyz.x;
+  double cartesian_diff_y = offset_by_cartesian.y - xyz.y;
+
+  double geodetic_diff_x = offset_by_geodetic.x - xyz.x;
+  double geodetic_diff_y = offset_by_geodetic.y - xyz.y;
+
+  double dot_norm = cartesian_diff_x * geodetic_diff_x + cartesian_diff_y * geodetic_diff_y;
+  double cross_norm = cartesian_diff_x * geodetic_diff_y - cartesian_diff_y * geodetic_diff_x;
+
+  return std::atan2(cross_norm, dot_norm);
 }
 
-double getCrossNorm(Vector2d a, Vector2d b)
+double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param)
 {
-    return a.x * b.y - a.y * b.x;
+  XYZ xyz;
+  llhc.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, xyz.x, xyz.y, xyz.z, llhc_param);
+
+  return getMeridianConvergence(lla, xyz, llhc, llhc_param);
 }
 
-double getMeridianConvergence(const LLA &lla, const XYZ &xyz, llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param)
+double getMeridicanConvergence(const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param)
 {
+  LLA lla;
+  llhc.revertXYZ2Deg(xyz.x, xyz.y, lla.latitude, lla.longitude, llhc_param);
+  lla.altitude = xyz.z;
 
-    LLA offset_lla = lla;
-    XYZ offset_xyz = xyz;
-
-    XYZ xyz_by_offset_lla;
-
-    offset_lla.latitude += 0.01;  // neary 1.11km. This value has no special meaning.
-    offset_xyz.y += 1000.0; // 1km. This value has no special meaning.
-
-    llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, xyz_by_offset_lla.x,
-                         xyz_by_offset_lla.y, xyz_by_offset_lla.z, llhc_param);
-
-    Vector2d offset_converted_vec;
-    Vector2d xyz_by_offset_lla_converted_vec;
-
-    offset_converted_vec.x = offset_xyz.x - xyz.x;
-    offset_converted_vec.y = offset_xyz.y - xyz.y;
-    xyz_by_offset_lla_converted_vec.x = xyz_by_offset_lla.x - xyz.x;
-    xyz_by_offset_lla_converted_vec.y = xyz_by_offset_lla.y - xyz.y;
-
-    double dot_norm = getDotNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
-    double cross_norm = getCrossNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
-
-    return std::atan2(cross_norm, dot_norm);
+  return getMeridianConvergence(lla, xyz, llhc, llhc_param);
 }
 
 }  // namespace llh_converter

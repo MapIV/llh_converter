@@ -32,48 +32,26 @@
 #define M4_MERIDIAN_CONVERGENCE_ANGLE_CORRECTION_HPP
 
 #include "llh_converter/llh_converter.hpp"
-#include <boost/math/constants/constants.hpp>
 
 namespace llh_converter
 {
-
 struct LLA
 {
-    double latitude;
-    double longitude;
-    double altitude;
+  double latitude;
+  double longitude;
+  double altitude;
 };
 
 struct XYZ
 {
-    double x;
-    double y;
-    double z;
+  double x;
+  double y;
+  double z;
 };
 
-struct Vector2d
-{
-    double x;
-    double y;
-};
-
-double getDotNorm(Vector2d a, Vector2d b);
-
-double getCrossNorm(Vector2d a, Vector2d b);
-
-template <class T> inline T deg2rad(T deg)
-{
-    return deg * boost::math::constants::degree<T>();
-}
-
-template <class T> inline T rad2deg(T rad)
-{
-    return rad * boost::math::constants::radian<T>();
-}
-
-double getMeridianConvergence(const LLA &lla, const XYZ &xyz,
-    llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param);
-
+double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param);
+double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param);
+double getMeridianConvergence(const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param);
 }  // namespace llh_converter
 
 #endif
