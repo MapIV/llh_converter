@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(llh_converter)
 
+set(CMAKE_CXX_STANDARD 17)
+
 find_package(catkin REQUIRED COMPONENTS)
 
 find_package(PkgConfig)
@@ -31,6 +33,7 @@ add_library(llh_converter SHARED
   src/meridian_convergence_angle_correction.cpp
 )
 target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
+add_dependencies(llh_converter ${catkin_EXPORTED_TARGETS})
 
 add_executable(llh_test test/height_converter_test.cpp)
 target_link_libraries(llh_test ${catkin_LIBRARIES} llh_converter)

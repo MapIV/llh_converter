@@ -34,40 +34,56 @@ namespace llh_converter
 {
 double getDotNorm(Vector2d a, Vector2d b)
 {
-    return a.x * b.x + a.y * b.y;
+  return a.x * b.x + a.y * b.y;
 }
 
 double getCrossNorm(Vector2d a, Vector2d b)
 {
-    return a.x * b.y - a.y * b.x;
+  return a.x * b.y - a.y * b.x;
 }
 
-double getMeridianConvergence(const LLA &lla, const XYZ &xyz, llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param)
+double getAngleFromOffset(const XYZ &cartesian, const XYZ &geodetic, const XYZ &origin)
 {
+  Vector2d cartesian_diff(cartesian.x - origin.x, cartesian.y - origin.y);
+  Vector2d geodetic_diff(geodetic.x - origin.x, geodetic.y - origin.y);
 
-    LLA offset_lla = lla;
-    XYZ offset_xyz = xyz;
+  double dot_norm = getDotNorm(cartesian_diff, geodetic_diff);
+  double cross_norm = getCrossNorm(cartesian_diff, geodetic_diff);
 
-    XYZ xyz_by_offset_lla;
+  return std::atan2(cross_norm, dot_norm);
+}
 
-    offset_lla.latitude += 0.01;  // neary 1.11km. This value has no special meaning.
-    offset_xyz.y += 1000.0; // 1km. This value has no special meaning.
+double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param)
+{
+  LLA offset_lla = lla;
+  XYZ offset_by_cartesian = xyz;
 
-    llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, xyz_by_offset_lla.x,
-                         xyz_by_offset_lla.y, xyz_by_offset_lla.z, llhc_param);
+  XYZ offset_by_geodetic;
 
-    Vector2d offset_converted_vec;
-    Vector2d xyz_by_offset_lla_converted_vec;
+  offset_lla.latitude += 0.01;  // neary 1.11km. This value has no special meaning.
+  offset_by_cartesian.y += 1000.0; // 1km. This value has no special meaning.
 
-    offset_converted_vec.x = offset_xyz.x - xyz.x;
-    offset_converted_vec.y = offset_xyz.y - xyz.y;
-    xyz_by_offset_lla_converted_vec.x = xyz_by_offset_lla.x - xyz.x;
-    xyz_by_offset_lla_converted_vec.y = xyz_by_offset_lla.y - xyz.y;
+  llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_by_geodetic.x,
+                       offset_by_geodetic.y, offset_by_geodetic.z, llhc_param);
 
-    double dot_norm = getDotNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
-    double cross_norm = getCrossNorm(offset_converted_vec, xyz_by_offset_lla_converted_vec);
+  return getAngleFromOffset(offset_by_cartesian, offset_by_geodetic, xyz);
+}
 
-    return std::atan2(cross_norm, dot_norm);
+double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param)
+{
+  XYZ xyz;
+  llhc.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, xyz.x, xyz.y, xyz.z, llhc_param);
+
+  return getMeridianConvergence(lla, xyz, llhc, llhc_param);
+}
+
+double getMeridicanConvergence(const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param)
+{
+  LLA lla;
+  llhc.revertXYZ2Deg(xyz.x, xyz.y, lla.latitude, lla.longitude, llhc_param);
+  lla.altitude = xyz.z;
+
+  return getMeridianConvergence(lla, xyz, llhc, llhc_param);
 }
 
 }  // namespace llh_converter

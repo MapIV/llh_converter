@@ -55,6 +55,14 @@ struct Vector2d
 {
     double x;
     double y;
+
+    Vector2d() : x(0), y(0)
+    {
+    }
+
+    Vector2d(double x, double y) : x(x), y(y)
+    {
+    }
 };
 
 double getDotNorm(Vector2d a, Vector2d b);
@@ -72,7 +80,11 @@ template <class T> inline T rad2deg(T rad)
 }
 
 double getMeridianConvergence(const LLA &lla, const XYZ &xyz,
-    llh_converter::LLHConverter &llhc,  const llh_converter::LLHParam &llhc_param);
+    LLHConverter &llhc,  const LLHParam &llhc_param);
+
+double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param);
+
+double getMeridianConvergence(const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param);
 
 }  // namespace llh_converter
 

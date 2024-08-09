@@ -628,4 +628,32 @@ void LLHConverter::initializeMGRSAlphabet()
                                                    { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
                                                    { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
 }
+
+double LLHConverter::getMeridianConvergenceRad(const double x, const double y, const LLHParam& param)
+{
+  double lat_rad = 0;
+  double lon_rad = 0;
+
+  revertXYZ2Rad(x, y, lat_rad, lon_rad, param);
+
+  double cartesian_offset_x = x;
+  double cartesian_offset_y = y + 100.0;
+
+  double geodetic_offset_x = 0;
+  double geodetic_offset_y = 0;
+  double tmp_z = 0;
+
+  convertRad2XYZ(lat_rad + 0.001, lon_rad, 0, geodetic_offset_x, geodetic_offset_y, tmp_z, param);
+
+  double cartesian_diff_x = cartesian_offset_x - x;
+  double cartesian_diff_y = cartesian_offset_y - y;
+
+  double geodetic_diff_x = geodetic_offset_x - x;
+  double geodetic_diff_y = geodetic_offset_y - y;
+
+  double dot_norm = cartesian_diff_x * geodetic_diff_x + cartesian_diff_y * geodetic_diff_y;
+  double cross_norm = cartesian_diff_x * geodetic_diff_y - cartesian_diff_y * geodetic_diff_x;
+
+  return std::atan2(cross_norm, dot_norm);
+}
 }  // namespace llh_converter
