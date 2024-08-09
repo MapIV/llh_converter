@@ -65,10 +65,6 @@ struct Vector2d
     }
 };
 
-double getDotNorm(Vector2d a, Vector2d b);
-
-double getCrossNorm(Vector2d a, Vector2d b);
-
 template <class T> inline T deg2rad(T deg)
 {
     return deg * boost::math::constants::degree<T>();
@@ -79,8 +75,7 @@ template <class T> inline T rad2deg(T rad)
     return rad * boost::math::constants::radian<T>();
 }
 
-double getMeridianConvergence(const LLA &lla, const XYZ &xyz,
-    LLHConverter &llhc,  const LLHParam &llhc_param);
+double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param);
 
 double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param);
 

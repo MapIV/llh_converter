@@ -32,27 +32,6 @@
 
 namespace llh_converter
 {
-double getDotNorm(Vector2d a, Vector2d b)
-{
-  return a.x * b.x + a.y * b.y;
-}
-
-double getCrossNorm(Vector2d a, Vector2d b)
-{
-  return a.x * b.y - a.y * b.x;
-}
-
-double getAngleFromOffset(const XYZ &cartesian, const XYZ &geodetic, const XYZ &origin)
-{
-  Vector2d cartesian_diff(cartesian.x - origin.x, cartesian.y - origin.y);
-  Vector2d geodetic_diff(geodetic.x - origin.x, geodetic.y - origin.y);
-
-  double dot_norm = getDotNorm(cartesian_diff, geodetic_diff);
-  double cross_norm = getCrossNorm(cartesian_diff, geodetic_diff);
-
-  return std::atan2(cross_norm, dot_norm);
-}
-
 double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param)
 {
   LLA offset_lla = lla;
@@ -66,7 +45,16 @@ double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc
   llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_by_geodetic.x,
                        offset_by_geodetic.y, offset_by_geodetic.z, llhc_param);
 
-  return getAngleFromOffset(offset_by_cartesian, offset_by_geodetic, xyz);
+  double cartesian_diff_x = offset_by_cartesian.x - xyz.x;
+  double cartesian_diff_y = offset_by_cartesian.y - xyz.y;
+
+  double geodetic_diff_x = offset_by_geodetic.x - xyz.x;
+  double geodetic_diff_y = offset_by_geodetic.y - xyz.y;
+
+  double dot_norm = cartesian_diff_x * geodetic_diff_x + cartesian_diff_y * geodetic_diff_y;
+  double cross_norm = cartesian_diff_x * geodetic_diff_y - cartesian_diff_y * geodetic_diff_x;
+
+  return std::atan2(cross_norm, dot_norm);
 }
 
 double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param)
