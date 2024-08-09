@@ -62,7 +62,7 @@ void meridian_convergence_angle_correction_test(const double& test_lat, const do
   std::cout << "-------------------------------------------------------------------------------------" << std::endl;
   std::cout << "Testing LatLon (" << std::setw(6) << test_lat << ", " << std::setw(6) << test_lat << ") ... " << std::endl;
   std::cout << "Calcalated Meridian Convergence Angle (" << mca << ")" << std::endl;
-  test(llh_converter::rad2deg(mca), answered_angle);
+  test(mca * 180.0 / M_PI, answered_angle);
 
 }
 
