@@ -74,7 +74,7 @@ private:
   bool is_gsigeo_loaded_ = false;
 
   // Geoid maps
-  GeographicLib::Geoid egm2008_{ "egm2008-1" };
+  GeographicLib::Geoid egm2008_{ "egm2008-1", "/usr/share/GeographicLib/geoids"};
   GSIGEO2011 gsigeo2011_;
 
   double getGeoidEGM2008(const double& lat_rad, const double& lon_rad);

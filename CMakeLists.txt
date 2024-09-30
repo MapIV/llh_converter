@@ -1,22 +1,21 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.14)
 project(llh_converter)
 
-set(CMAKE_CXX_STANDARD 17)
+find_package(ament_cmake_auto REQUIRED)
 
-find_package(catkin REQUIRED COMPONENTS)
+find_package(GeographicLib REQUIRED)
 
-find_package(PkgConfig)
-find_path(GeographicLib INCLUDE_DIR GeographicLib/config.h
-  PATH_SUFFIXES GeographicLib
-)
-set(GeographicLib_LIBRARIES
-  NAMES Geographic
-)
+ament_auto_find_build_dependencies()
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES llh_converter
-)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic -Wunused-function)
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 20)
+endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories(
   include
@@ -26,32 +25,16 @@ link_directories(
   /usr/local/lib
 )
 
-add_library(llh_converter SHARED
+ament_auto_add_library(llh_converter STATIC
   src/height_converter.cpp
   src/gsigeo.cpp
   src/llh_converter.cpp
   src/meridian_convergence_angle_correction.cpp
 )
-target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
-add_dependencies(llh_converter ${catkin_EXPORTED_TARGETS})
 
-add_executable(llh_test test/height_converter_test.cpp)
-target_link_libraries(llh_test ${catkin_LIBRARIES} llh_converter)
-add_dependencies(llh_test ${catkin_EXPORTED_TARGETS})
+target_link_libraries(llh_converter PUBLIC ${GeographicLib_LIBRARY})
 
-add_executable(mcac_test test/meridian_convergence_angle_correction_test.cpp)
-target_link_libraries(mcac_test ${catkin_LIBRARIES} llh_converter)
-add_dependencies(mcac_test ${catkin_EXPORTED_TARGETS})
+ament_export_include_directories("include/llh_converter")
+ament_export_dependencies(Eigen3)
 
-install(DIRECTORY include/llh_converter/
-  DESTINATION include/llh_converter
-  FILES_MATCHING PATTERN "*.hpp"
-)
-
-install(
-  TARGETS
-    llh_converter
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+ament_auto_package()
