@@ -311,7 +311,7 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
   {
     GeographicLib::UTMUPS::Forward(lat_deg, lon_deg, utm_zone, utm_northup, utx, uty);
   }
-  catch (const GeographicLib::GeographicErr err)
+  catch (const GeographicLib::GeographicErr& err)
   {
     std::cerr << "\033[31;1mGeographicLib Error: Failed to convert LLH to UTM: " << err.what() << std::endl;
     exit(EXIT_FAILURE);
@@ -349,7 +349,7 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
       }
     }
   }
-  catch (const GeographicLib::GeographicErr err)
+  catch (const GeographicLib::GeographicErr& err)
   {
     std::cerr << "\033[31;1mError: Failed to convert UTM to MGRS: " << err.what() << std::endl;
     exit(EXIT_FAILURE);
@@ -392,7 +392,7 @@ void LLHConverter::revMGRS2Rad(const double& x, const double& y, double& lat_rad
     lat_rad = lat_deg * M_PI / 180.;
     lon_rad = lon_deg * M_PI / 180.;
   }
-  catch (const GeographicLib::GeographicErr err)
+  catch (const GeographicLib::GeographicErr& err)
   {
     std::cerr << "\033[31;1mGeographicLib Error: Failed to revert MGRS to lat/lon" << std::endl;
     exit(EXIT_FAILURE);
