@@ -111,7 +111,7 @@ sudo geographiclib-get-geoids best
 
 mkdir -p test_ws/src
 cd test_ws/src/
-git clone https://github.com/MapIV/height_converter.git
+git clone https://github.com/MapIV/llh_converter.git
 sudo mkdir /usr/share/GSIGEO
 sudo cp llh_converter/data/gsigeo2011_ver2_1.asc /usr/share/GSIGEO/
 unzip llh_converter/data/GSIGEO2024beta.zip
