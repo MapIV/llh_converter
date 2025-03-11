@@ -99,15 +99,6 @@ void GSIGEO2011::loadGeoidMap(const std::string& geoid_file)
     }
   }
   is_geoid_loaded_ = true;
-
-
-    // Debugging: Check first few rows of loaded data
-    for (int i = 0; i < 10; ++i) {
-      for (int j = 0; j < 10; ++j) {
-          std::cout << std::setw(8) << geoid_map_[i][j] << " ";
-      }
-      std::cout << std::endl;
-  }
 }
 
 double GSIGEO2011::getGeoid(const double& lat, const double& lon)
