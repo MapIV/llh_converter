@@ -47,8 +47,8 @@ public:
 private:
   // Geoid data
   std::vector<std::vector<double>> geoid_map_;  // geoid_map_[lat][lon]
-  int column_size_ = 2101;
-  int row_size_ = 1601;
+  int column_size_ = 1601;
+  int row_size_ = 2101;
 
   // Flag
   bool is_geoid_loaded_ = false;

@@ -116,15 +116,17 @@ sudo mkdir /usr/share/GSIGEO
 sudo cp llh_converter/data/gsigeo2011_ver2_1.asc /usr/share/GSIGEO/
 unzip llh_converter/data/GSIGEO2024beta.zip
 sudo mv GSIGEO2024beta.isg /usr/share/GSIGEO/
-cd ../../
+cd ../
 catkin_make -DCMAKE_BUILD_TYPE=Release
 ```
 
 ## Geoid model data
 
-This package contains GSIGEO2011 geoid data file which is provided by Geospatial Information Authority of Japan.
+This package contains GSIGEO2011/GSIGEO2024 geoid data file which is provided by Geospatial Information Authority of Japan.
 
-[Official Website of Geospatial Information Authority of Japan](https://fgd.gsi.go.jp/download/geoid.php)
+[GSI's official website that relies on GSIGEO2011](https://fgd.gsi.go.jp/download/geoid.php)
+
+[GSI's official website that relies on GSIGEO2024](https://www.gsi.go.jp/buturisokuchi/grageo_reference.html)
 
 ## LICENSE
 

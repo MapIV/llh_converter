@@ -29,7 +29,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "llh_converter/gsigeo2024.hpp"
-#include "llh_converter/gsigeo.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -41,175 +40,112 @@
 namespace llh_converter
 {
 
-// std::vector<std::string> split(std::string input, char delimiter)
-// {
-//     std::istringstream stream(input);
-//     std::string field;
-//     std::vector<std::string> result;
-
-//     while (std::getline(stream, field, delimiter))
-//     {
-//     if (field != std::string(" ") && !field.empty() && field != "\n" && field != "\r")
-//         result.push_back(field);
-//     }
-//     return result;
-// }
-
 GSIGEO2024::GSIGEO2024() {}
+
 GSIGEO2024::~GSIGEO2024() {}
 
-void GSIGEO2024::loadGeoidMap(const std::string& geoid_file)
+void GSIGEO2024::loadGeoidMap(const std::string &geoid_file)
 {
-    std::ifstream file(geoid_file);
-    if (!file.is_open()) {
-        throw std::runtime_error("Failed to open geoid file: " + geoid_file);
+    std::ifstream infile(geoid_file);
+    if (!infile)
+    {
+        std::cerr << "Error opening file: " << geoid_file << std::endl;
+        return;
     }
 
     std::string line;
-    // ヘッダをスキップ
-    while (std::getline(file, line)) {
-        if (line.find("end_of_head") != std::string::npos) {
+    bool header_end = false;
+    while (std::getline(infile, line))
+    {
+        if (line.find("end_of_head") != std::string::npos)
+        {
+            header_end = true;
             break;
         }
     }
 
-    // // データ領域の読み込み
-    // geoid_map_.resize(row_size_, std::vector<double>(column_size_, -9999.0000));
-    // for (int i = 0; i < row_size_; ++i) {
-    //     for (int j = 0; j < column_size_; ++j) {
-    //         file >> geoid_map_[i][j];
-    //     }
-    // }
-
-    auto split = [](const std::string& input, char delimiter) -> std::vector<std::string>
+    if (!header_end)
     {
-        std::istringstream stream(input);
-        std::string field;
-        std::vector<std::string> result;
-
-        while (std::getline(stream, field, delimiter))
-        {
-            if (!field.empty() && field != " " && field != "\n" && field != "\r")
-                result.push_back(field);
-        }
-        return result;
-    };
-
-    geoid_map_.resize(row_size_);
-    for (int i = 0; i < row_size_; i++)
-    {
-      geoid_map_[i].resize(column_size_);
+        std::cerr << "Header not properly formatted in file." << std::endl;
+        return;
     }
-    std::string curr_line;
-    // Skip header line
-    std::getline(file, curr_line);
-  
-    int i = 0, j = 0;
-  
-    while (std::getline(file, curr_line))
+
+    geoid_map_.resize(row_size_, std::vector<double>(column_size_, -9999.0));
+
+    for (int i = 0; i < row_size_; ++i)
     {
-      std::vector<std::string> str_vec = split(curr_line, ' ');
-  
-      for (int k = 0; k < str_vec.size(); k++)
-      {
-        geoid_map_[i][j] = std::stod(str_vec[k]);
-        j++;
-      }
-      if (j == column_size_)
-      {
-        j = 0;
-        i++;
-      }
+        for (int j = 0; j < column_size_; ++j)
+        {
+            if (!(infile >> geoid_map_[i][j]))
+            {
+                std::cerr << "Error reading geoid data at row " << i << ", col " << j << std::endl;
+                return;
+            }
+        }
     }
 
     is_geoid_loaded_ = true;
 }
 
-// 緯度経度のジオイド高を取得
-// double GSIGEO2024::getGeoid(const double& lat, const double& lon)
-// {
-//     if (!is_geoid_loaded_) {
-//         throw std::runtime_error("Geoid map is not loaded");
-//     }
-
-//     // 範囲チェック
-//     if (lat < 15.0 || lat > 50.0 || lon < 120.0 || lon > 160.0) {
-//         return std::numeric_limits<double>::quiet_NaN();
-//     }
-
-//     // 格子の原点 (50N, 120E) からのオフセット
-//     double lat_offset = (50.0 - lat) * 60.0;  // 緯度の1分間隔
-//     double lon_offset = (lon - 120.0) * (60.0 / 1.5);  // 経度の1.5分間隔
-
-//     int i = static_cast<int>(lat_offset);
-//     int j = static_cast<int>(lon_offset);
-
-//     if (i < 0 || i >= row_size_ - 1 || j < 0 || j >= column_size_ - 1) {
-//         return std::numeric_limits<double>::quiet_NaN();
-//     }
-
-//     // 四隅の値を取得
-//     double Q11 = geoid_map_[i][j];
-//     double Q12 = geoid_map_[i][j + 1];
-//     double Q21 = geoid_map_[i + 1][j];
-//     double Q22 = geoid_map_[i + 1][j + 1];
-
-//     if (Q11 == -9999.0000 || Q12 == -9999.0000 || Q21 == -9999.0000 || Q22 == -9999.0000) {
-//         return std::numeric_limits<double>::quiet_NaN();
-//     }
-
-//     // 格子点間の相対的な位置
-//     double dx = lon_offset - j;
-//     double dy = lat_offset - i;
-
-//     // バイリニア補間
-//     double R1 = (1 - dx) * Q11 + dx * Q12;
-//     double R2 = (1 - dx) * Q21 + dx * Q22;
-//     double P = (1 - dy) * R1 + dy * R2;
-
-//     return P;
-// }
-
-double GSIGEO2024::getGeoid(const double& lat, const double& lon)
+double GSIGEO2024::getGeoid(const double &lat, const double &lon)
 {
-  if (!is_geoid_loaded_)
-  {
-    std::cerr << "Error: Geoid map is not loaded" << std::endl;
-    exit(1);
-  }
-  const double lat_min = 20;
-  const double lon_min = 120;
-  const double d_lat = 1.0 / 60.0;
-  const double d_lon = 1.5 / 60.0;
+    if (!is_geoid_loaded_)
+    {
+        std::cerr << "Geoid map not loaded." << std::endl;
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
-  const int i_lat = std::floor((lat - lat_min) / d_lat);
-  const int i_lon = std::floor((lon - lon_min) / d_lon);
-  const int j_lat = i_lat + 1;
-  const int j_lon = i_lon + 1;
+    if (lat < 15.0 || lat > 50.0 || lon < 120.0 || lon > 160.0)
+    {
+        std::cerr << "Input coordinates out of range." << std::endl;
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
-  // const double t = (((lat - lat_min) / d_lat) - i_lat) / d_lat;
-  // const double u = (((lon - lon_min) / d_lon) - i_lon) / d_lon;
-  const double t = (lat - (lat_min + i_lat * d_lat)) / d_lat;
-  const double u = (lon - (lon_min + i_lon * d_lon)) / d_lon;
+    // Grid step (latitude 1 minute = 0.0166667 degrees, longitude 1.5 minutes = 0.025 degrees)
+    const double lat_step = 1.0 / 60.0;
+    const double lon_step = 1.5 / 60.0;
 
-  if (i_lat < 0 || i_lat >= row_size_ - 1 || i_lon < 0 || i_lon >= column_size_ - 1)
-  {
-    std::cerr << "Error: latitude/longitude is out of range (20~50, 120~150)" << std::endl;
-    std::cerr << (lat, lon) << std::endl;
-    exit(1);
-  }
+    // The index calculation from the reference point (latitude 50 degrees, longitude 120 degrees)
+    int i1 = static_cast<int>((50.0 - lat) / lat_step);
+    int j1 = static_cast<int>((lon - 120.0) / lon_step);
 
-  if (geoid_map_[i_lat][i_lon] == 999 || geoid_map_[i_lat][j_lon] == 999 || geoid_map_[j_lat][i_lon] == 999 ||
-      geoid_map_[j_lat][j_lon] == 999)
-  {
-    std::cerr << "Error: Not supported area" << std::endl;
-    exit(1);
-  }
+    int i2 = i1 + 1;
+    int j2 = j1 + 1;
 
-  double geoid = (1 - t) * (1 - u) * geoid_map_[i_lat][i_lon] + (1 - t) * u * geoid_map_[i_lat][j_lon] +
-                 t * (1 - u) * geoid_map_[j_lat][i_lon] + t * u * geoid_map_[j_lat][j_lon];
+    if (i1 < 0 || i2 >= row_size_ || j1 < 0 || j2 >= column_size_)
+    {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
-  return geoid;
+    // Geoid height at the four corners
+    double f00 = geoid_map_[i1][j1];
+    double f10 = geoid_map_[i1][j2];
+    double f01 = geoid_map_[i2][j1];
+    double f11 = geoid_map_[i2][j2];
+
+    if (f00 == -9999.0 || f10 == -9999.0 || f01 == -9999.0 || f11 == -9999.0)
+    {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    // Coordinates of the four corners
+    double lat1 = 50.0 - i1 * lat_step;
+    double lat2 = lat1 - lat_step;
+    double lon1 = 120.0 + j1 * lon_step;
+    double lon2 = lon1 + lon_step;
+
+    // Calculate interpolation coefficients correctly
+    double t = (lat1 - lat) / (lat1 - lat2);
+    double u = (lon - lon1) / (lon2 - lon1);
+
+    // Bilinear interpolation
+    double interpolated_value =
+        (1 - t) * (1 - u) * f00 +
+        (1 - t) * u * f10 +
+        t * (1 - u) * f01 +
+        t * u * f11;
+
+    return interpolated_value;
 }
 
 } // namespace llh_converter
