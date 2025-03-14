@@ -55,13 +55,6 @@ LLHConverter::LLHConverter()
   initializeMGRSAlphabet();
 }
 
-LLHConverter::LLHConverter(const std::string& geoid_file)
-{
-  height_converter_.loadGSIGEOGeoidFile(geoid_file);
-  initializeJPRCSOrigins();
-  initializeMGRSAlphabet();
-}
-
 // Public fumember functions
 void LLHConverter::convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y,
                                   double& z, const LLHParam& param)
