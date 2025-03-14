@@ -124,7 +124,7 @@ int main(int argc, char** argv)
   double test_lat = 35.5, test_lon = 135.5;
 
   double x, y, z;
-  std::cout << "TEST MGRS" << std::endl;
+  std::cout << "Testing MGRS  ... ";
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
   test2(x, y, 45346.7389, 28608.3575);
 
@@ -132,9 +132,21 @@ int main(int argc, char** argv)
   param.projection_method = llh_converter::ProjectionMethod::JPRCS;
   param.grid_code = std::to_string(5);
 
-  std::cout << "TEST JPRCS" << std::endl;
+  std::cout << "Testing JPRCS ... ";
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
   test2(x, y, 105842.7741, -54845.8269);
+
+  // Test TM
+  param.projection_method = llh_converter::ProjectionMethod::TM;
+  param.tm_param.inv_flatten_ratio = 298.257222101;
+  param.tm_param.semi_major_axis = 6378137.0;
+  param.tm_param.scale_factor = 0.9996;
+  param.tm_param.origin_lat_rad = 35.5 * M_PI / 180.;
+  param.tm_param.origin_lon_rad = 135.5 * M_PI / 180.;
+
+  std::cout << "Testing TM    ... ";
+  llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
+  test2(x, y, 0.0, 0.0);
 
   return 0;
 }
