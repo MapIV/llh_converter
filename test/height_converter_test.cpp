@@ -53,6 +53,7 @@ int main(int argc, char** argv)
   llh_converter::HeightConverter hc;
 
   // GSIGEO Test
+  std::cout << "GSIGEO2011 Test" << std::endl;
   hc.setGeoidType(llh_converter::GeoidType::GSIGEO2011);
   hc.loadGSIGEOGeoidFile();
 
@@ -87,7 +88,17 @@ int main(int argc, char** argv)
   test(hc.convertHeightDeg(35, 135, 0, llh_converter::ConvertType::ORTHO2ELLIPS), 37.0557);
   test(hc.convertHeightDeg(35, 135, 0, llh_converter::ConvertType::ELLIPS2ORTHO), -37.0557);
 
+  // GSIGEO2024 Test
+  std::cout << "GSIGEO2024 Test" << std::endl;
+  hc.setGeoidType(llh_converter::GeoidType::GSIGEO2024);
+  hc.loadGSIGEO2024GeoidFile();
+  std::cout << "Testing (" << std::setw(9) << 36.104394 << ", " << std::setw(9) << 140.085365 << ") ... ";
+  test(hc.getGeoidDeg(36.104394, 140.085365), 40.3059);
+  std::cout << "Testing (" << std::setw(9) << 35.160410 << ", " << std::setw(9) << 139.615526 << ") ... ";
+  test(hc.getGeoidDeg(35.160410, 139.615526), 36.7568);
+
   // LLHConverter test
+  std::cout << "LLHConverter Test" << std::endl;
   llh_converter::LLHConverter llh_converter;
   llh_converter::LLHParam param;
   param.use_mgrs = true;

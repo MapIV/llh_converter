@@ -34,6 +34,7 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <iomanip>
 
 #include <boost/algorithm/string.hpp>
 

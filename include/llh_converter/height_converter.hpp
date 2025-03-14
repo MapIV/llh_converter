@@ -36,6 +36,7 @@
 #include <GeographicLib/Geoid.hpp>
 
 #include "llh_converter/gsigeo.hpp"
+#include "llh_converter/gsigeo2024.hpp"
 
 namespace llh_converter
 {
@@ -43,7 +44,8 @@ enum class GeoidType
 {
   EGM2008 = 0,
   GSIGEO2011 = 1,
-  NONE = 2,
+  GSIGEO2024 = 2,
+  NONE = 3,
 };
 
 enum ConvertType
@@ -66,6 +68,8 @@ public:
   double getGeoidDeg(const double& lat_deg, const double& lon_deg);
   void loadGSIGEOGeoidFile(const std::string& geoid_file);
   void loadGSIGEOGeoidFile();
+  void loadGSIGEO2024GeoidFile(const std::string& geoid_file);
+  void loadGSIGEO2024GeoidFile();
 
 private:
   // Geoid Type
@@ -76,9 +80,11 @@ private:
   // Geoid maps
   GeographicLib::Geoid egm2008_{ "egm2008-1" };
   GSIGEO2011 gsigeo2011_;
+  GSIGEO2024 gsigeo2024_;
 
   double getGeoidEGM2008(const double& lat_rad, const double& lon_rad);
   double getGeoidGSIGEO2011(const double& lat_rad, const double& lon_rad);
+  double getGeoidGSIGEO2024(const double& lat_rad, const double& lon_rad);
 };
 }  // namespace llh_converter
 

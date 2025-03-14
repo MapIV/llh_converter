@@ -29,6 +29,7 @@ link_directories(
 add_library(llh_converter SHARED
   src/height_converter.cpp
   src/gsigeo.cpp
+  src/gsigeo2024.cpp
   src/llh_converter.cpp
   src/meridian_convergence_angle_correction.cpp
 )
@@ -42,6 +43,14 @@ add_dependencies(llh_test ${catkin_EXPORTED_TARGETS})
 add_executable(mcac_test test/meridian_convergence_angle_correction_test.cpp)
 target_link_libraries(mcac_test ${catkin_LIBRARIES} llh_converter)
 add_dependencies(mcac_test ${catkin_EXPORTED_TARGETS})
+
+add_executable(gsigeo_test test/gsigeo_test.cpp)
+target_link_libraries(gsigeo_test ${catkin_LIBRARIES} llh_converter)
+add_dependencies(gsigeo_test ${catkin_EXPORTED_TARGETS})
+
+add_executable(gsigeo2024_test test/gsigeo2024_test.cpp)
+target_link_libraries(gsigeo2024_test ${catkin_LIBRARIES} llh_converter)
+add_dependencies(gsigeo2024_test ${catkin_EXPORTED_TARGETS})
 
 install(DIRECTORY include/llh_converter/
   DESTINATION include/llh_converter

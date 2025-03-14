@@ -67,7 +67,6 @@ class LLHConverter
 {
 public:
   LLHConverter();
-  LLHConverter(const std::string& geoid_file);
 
   void convertDeg2XYZ(const double& lat_deg, const double& lon_deg, const double& h, double& x, double& y, double& z,
                       const LLHParam& param);
