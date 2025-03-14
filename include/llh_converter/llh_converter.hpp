@@ -53,14 +53,30 @@ enum class MGRSPrecision
   MICRO_METER_100 = 9,
 };
 
+enum class ProjectionMethod
+{
+  TM = 0,
+  JPRCS = 1,
+  MGRS = 2,
+};
+
+struct TMParam
+{
+  double inv_flatten_ratio;
+  double semi_major_axis;
+  double scale_factor;
+  double origin_lat_rad;
+  double origin_lon_rad;
+};
+
 struct LLHParam
 {
-  bool use_mgrs;
-  int plane_num;
-  std::string mgrs_code;
+  ProjectionMethod projection_method;
+  std::string grid_code;
   // MGRSPrecision precision;
   ConvertType height_convert_type;
   GeoidType geoid_type;
+  TMParam tm_param;
 };
 
 class LLHConverter
@@ -75,8 +91,8 @@ public:
   void revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg, const LLHParam& param);
   void revertXYZ2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad, const LLHParam& param);
 
-  void convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y, const LLHParam& param);
-  void convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y, const LLHParam& param);
+  void convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y, const std::string& mgrs_code, const int jprcs_code);
+  void convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y, const int jprcs_code);
 
   void getMapOriginDeg(double& lat_rad, double& lon_rad, const LLHParam& param);
   void getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param);
@@ -100,23 +116,29 @@ private:
   bool use_origin_zone_ = true;
   bool is_origin_set_ = false;
 
-  // Constant param
-  const double F_ = 298.257222101;
-  const double a_ = 6378137;
-  const double m0_ = 0.9999;
+  // Constant param for MGRS
   const int grid_code_size_ = 5;
   MGRSPrecision precision_ = MGRSPrecision::MICRO_METER_100;
+
+  // origins for JPRCS
+  std::vector<double> jprcs_origin_lat_rads_;
+  std::vector<double> jprcs_origin_lon_rads_;
+  TMParam jprcs_tm_param_;
 
   // Object
   HeightConverter height_converter_;
 
   // Functions
+  // TransverseMercator
+  void convRad2TM(const double& lat_rad, const double& lon_rad, const TMParam& param, double& x, double& y);
+  void revTM2Rad(const double& x, const double& y, const TMParam& param, double& lat_rad, double& lon_rad);
   // Japan Plane Rectangular Coordinate System
-  void convRad2JPRCS(const double& lat_rad, const double& lon_rad, double& x, double& y);
-  void revJPRCS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
+  void initializeJPRCSOrigins();
+  void convRad2JPRCS(const double& lat_rad, const double& lon_rad, const int grid_code, double& x, double& y);
+  void revJPRCS2Rad(const double& x, const double& y, const int grid_code, double& lat_rad, double& lon_rad);
   // MGRS
   void convRad2MGRS(const double& lat_rad, const double& lon_rad, double& x, double& y);
-  void revMGRS2Rad(const double& x, const double& y, double& lat_rad, double& lon_rad);
+  void revMGRS2Rad(const double& x, const double& y, std::string mgrs_code, double& lat_rad, double& lon_rad);
 
   std::pair<int, double> getCrossNum(const double& x);
   std::string getOffsetZone(const std::string& zone, const int& offset);
