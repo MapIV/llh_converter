@@ -48,6 +48,22 @@ void test(const double& result, const double& answer)
   }
 }
 
+void test2(const double result0, const double result1, const double answer0, const double answer1)
+{
+  int i_result0 = std::round(result0 * 10000);
+  int i_result1 = std::round(result1 * 10000);
+  int i_answer0 = std::round(answer0 * 10000);
+  int i_answer1 = std::round(answer1 * 10000);
+  if (i_result0 == i_answer0 && i_result1 == i_answer1)
+  {
+    std::cout << "\033[32;1mTEST SUCCESS: " << result0 << ", " << result1 << " == " << answer0 << ", " << answer1 << "\033[m" << std::endl;
+  }
+  else
+  {
+    std::cout << "\033[31;1mTEST FAILED : " << result0 << ", " << result1 << " != " << answer0 << ", " << answer1 << "\033[m" << std::endl;
+  }
+}
+
 int main(int argc, char** argv)
 {
   llh_converter::HeightConverter hc;
@@ -101,7 +117,7 @@ int main(int argc, char** argv)
   std::cout << "LLHConverter Test" << std::endl;
   llh_converter::LLHConverter llh_converter;
   llh_converter::LLHParam param;
-  param.use_mgrs = true;
+  param.projection_method = llh_converter::ProjectionMethod::MGRS;
   param.height_convert_type = llh_converter::ConvertType::NONE;
   param.geoid_type = llh_converter::GeoidType::EGM2008;
 
@@ -110,15 +126,15 @@ int main(int argc, char** argv)
   double x, y, z;
   std::cout << "TEST MGRS" << std::endl;
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
-  std::cout << std::setprecision(15) << x << ", " << y << ", " << z << std::endl;
+  test2(x, y, 45346.7389, 28608.3575);
 
   // Test JPRCS
-  param.use_mgrs = false;
-  param.plane_num = 5;
+  param.projection_method = llh_converter::ProjectionMethod::JPRCS;
+  param.grid_code = std::to_string(5);
 
   std::cout << "TEST JPRCS" << std::endl;
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
-  std::cout << std::setprecision(15) << x << ", " << y << ", " << z << std::endl;
+  test2(x, y, 105842.7741, -54845.8269);
 
   return 0;
 }
