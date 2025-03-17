@@ -154,6 +154,67 @@ void LLHConverter::convertJPRCS2MGRS(const double& j_x, const double& j_y, doubl
   convRad2MGRS(lat_rad, lon_rad, m_x, m_y);
 }
 
+void LLHConverter::convertProj2Proj(const double& before_x, const double& before_y, const LLHParam& before_param,
+                                    double& after_x, double& after_y, const LLHParam& after_param)
+{
+  double lat_rad, lon_rad;
+
+  if (before_param.projection_method == after_param.projection_method)
+  {
+    after_x = before_x;
+    after_y = before_y;
+    return;
+  }
+
+  switch (before_param.projection_method)
+  {
+    case ProjectionMethod::TM:
+    {
+      revTM2Rad(before_x, before_y, before_param.tm_param, lat_rad, lon_rad);
+      break;
+    }
+    case ProjectionMethod::JPRCS:
+    {
+      revJPRCS2Rad(before_x, before_y, std::stoi(before_param.grid_code), lat_rad, lon_rad);
+      break;
+    }
+    case ProjectionMethod::MGRS:
+    {
+      revMGRS2Rad(before_x, before_y, before_param.grid_code, lat_rad, lon_rad);
+      break;
+    }
+    default:
+    {
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(before_param.projection_method) << "\033[0m" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  switch(after_param.projection_method)
+  {
+    case ProjectionMethod::TM:
+    {
+      convRad2TM(lat_rad, lon_rad, after_param.tm_param, after_x, after_y);
+      break;
+    }
+    case ProjectionMethod::JPRCS:
+    {
+      convRad2JPRCS(lat_rad, lon_rad, std::stoi(after_param.grid_code), after_x, after_y);
+      break;
+    }
+    case ProjectionMethod::MGRS:
+    {
+      convRad2MGRS(lat_rad, lon_rad, after_x, after_y);
+      break;
+    }
+    default:
+    {
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(after_param.projection_method) << "\033[0m" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+}
+
 void LLHConverter::getMapOriginDeg(double& lat_deg, double& lon_deg, const LLHParam& param)
 {
   double lat_rad = 0, lon_rad = 0;

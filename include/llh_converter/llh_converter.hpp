@@ -93,6 +93,7 @@ public:
 
   void convertMGRS2JPRCS(const double& m_x, const double& m_y, double& j_x, double& j_y, const std::string& mgrs_code, const int jprcs_code);
   void convertJPRCS2MGRS(const double& j_x, const double& j_y, double& m_x, double& m_y, const int jprcs_code);
+  void convertProj2Proj(const double& before_x, const double& before_y, const LLHParam& before_param, double& after_x, double& after_y, const LLHParam& after_param);
 
   void getMapOriginDeg(double& lat_rad, double& lon_rad, const LLHParam& param);
   void getMapOriginRad(double& lat_rad, double& lon_rad, const LLHParam& param);
