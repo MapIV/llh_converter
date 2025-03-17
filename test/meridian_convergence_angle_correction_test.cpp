@@ -40,17 +40,20 @@ void test(const double& result, const double& answer)
   double diff_theres = 0.0001;
   if (diff < diff_theres)
   {
-    std::cout << "\033[32;1mTEST SUCCESS: |(" << result << ") - (" <<  answer << ")| = " << diff << "< " << diff_theres << "\033[m" << std::endl;
+    std::cout << "\033[32;1mTEST SUCCESS: |(" << result << ") - (" << answer << ")| = " << diff << "< " << diff_theres
+              << "\033[m" << std::endl;
   }
   else
   {
-    std::cout << "\033[31;1mTEST FAILED: |(" << result << ") - (" <<  answer << ")| = " << diff << ">= " << diff_theres << "\033[m" << std::endl;
+    std::cout << "\033[31;1mTEST FAILED: |(" << result << ") - (" << answer << ")| = " << diff << ">= " << diff_theres
+              << "\033[m" << std::endl;
   }
 }
 
-void meridian_convergence_angle_correction_test(const double& test_lat, const double& test_lon, const double& answered_angle,
-  llh_converter::LLHConverter &llh_converter,  const llh_converter::LLHParam &param
-)
+void meridian_convergence_angle_correction_test(const double& test_lat, const double& test_lon,
+                                                const double& answered_angle,
+                                                llh_converter::LLHConverter& llh_converter,
+                                                const llh_converter::LLHParam& param)
 {
   llh_converter::LLA lla;
   llh_converter::XYZ xyz;
@@ -58,12 +61,12 @@ void meridian_convergence_angle_correction_test(const double& test_lat, const do
   lla.longitude = test_lon;
   lla.altitude = 30.0;
   llh_converter.convertDeg2XYZ(lla.latitude, lla.longitude, lla.altitude, xyz.x, xyz.y, xyz.z, param);
-  double mca = llh_converter::getMeridianConvergence(lla, xyz, llh_converter, param); // meridian convergence angle
+  double mca = llh_converter::getMeridianConvergence(lla, xyz, llh_converter, param);  // meridian convergence angle
   std::cout << "-------------------------------------------------------------------------------------" << std::endl;
-  std::cout << "Testing LatLon (" << std::setw(6) << test_lat << ", " << std::setw(6) << test_lat << ") ... " << std::endl;
+  std::cout << "Testing LatLon (" << std::setw(6) << test_lat << ", " << std::setw(6) << test_lat << ") ... "
+            << std::endl;
   std::cout << "Calcalated Meridian Convergence Angle (" << mca << ")" << std::endl;
   test(mca * 180.0 / M_PI, answered_angle);
-
 }
 
 int main(int argc, char** argv)
@@ -80,11 +83,11 @@ int main(int argc, char** argv)
   // https://vldb.gsi.go.jp/sokuchi/surveycalc/surveycalc/bl2xyf.html
   // nagoya city ueda
   double test_lat = 35.141168610, test_lon = 136.989591759;
-  double answered_angle = -0.101925000; // [deg]
+  double answered_angle = -0.101925000;  // [deg]
   meridian_convergence_angle_correction_test(test_lat, test_lon, answered_angle, llh_converter, param);
   // nagoya city ozone
   double test_lat2 = 35.188843433, test_lon2 = 136.943096063;
-  double answered_angle2 = -0.128838889; // [deg]
+  double answered_angle2 = -0.128838889;  // [deg]
   meridian_convergence_angle_correction_test(test_lat2, test_lon2, answered_angle2, llh_converter, param);
 
   return 0;

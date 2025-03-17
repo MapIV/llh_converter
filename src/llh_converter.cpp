@@ -40,10 +40,9 @@
 namespace llh_converter
 {
 template <typename L, typename R>
-boost::bimaps::bimap<L, R>
-makeBimap(std::initializer_list<typename boost::bimaps::bimap<L, R>::value_type> list)
+boost::bimaps::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimaps::bimap<L, R>::value_type> list)
 {
-    return boost::bimaps::bimap<L, R>(list.begin(), list.end());
+  return boost::bimaps::bimap<L, R>(list.begin(), list.end());
 }
 
 // Constructor
@@ -88,7 +87,8 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
     }
     default:
     {
-      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(param.projection_method) << "\033[0m" << std::endl;
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(param.projection_method)
+                << "\033[0m" << std::endl;
       std::cerr << "\033[31;1mError: LLHConverter::convertRad2XYZ()\033[0m" << std::endl;
       exit(EXIT_FAILURE);
     }
@@ -130,7 +130,8 @@ void LLHConverter::revertXYZ2Rad(const double& x, const double& y, double& lat_r
     }
     default:
     {
-      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(param.projection_method) << "\033[0m" << std::endl;
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(param.projection_method)
+                << "\033[0m" << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -185,12 +186,13 @@ void LLHConverter::convertProj2Proj(const double& before_x, const double& before
     }
     default:
     {
-      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(before_param.projection_method) << "\033[0m" << std::endl;
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(before_param.projection_method)
+                << "\033[0m" << std::endl;
       exit(EXIT_FAILURE);
     }
   }
 
-  switch(after_param.projection_method)
+  switch (after_param.projection_method)
   {
     case ProjectionMethod::TM:
     {
@@ -209,7 +211,8 @@ void LLHConverter::convertProj2Proj(const double& before_x, const double& before
     }
     default:
     {
-      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(after_param.projection_method) << "\033[0m" << std::endl;
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(after_param.projection_method)
+                << "\033[0m" << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -246,7 +249,8 @@ void LLHConverter::getMapOriginRad(double& lat_rad, double& lon_rad, const LLHPa
     }
     default:
     {
-      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(param.projection_method) << "\033[0m" << std::endl;
+      std::cerr << "\033[31;1mError: Invalid projection method, " << static_cast<int>(param.projection_method)
+                << "\033[0m" << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -310,9 +314,11 @@ void LLHConverter::convRad2TM(const double& lat_rad, const double& lon_rad, cons
        PB5 * sin(8.0 * lat_rad) + PB6 * sin(10.0 * lat_rad) + PB7 * sin(12.0 * lat_rad) + PB8 * sin(14.0 * lat_rad) +
        PB9 * sin(16.0 * lat_rad);
 
-  PSo = (double)PB1 * param.origin_lat_rad + PB2 * sin(2.0 * param.origin_lat_rad) + PB3 * sin(4.0 * param.origin_lat_rad) +
-        PB4 * sin(6.0 * param.origin_lat_rad) + PB5 * sin(8.0 * param.origin_lat_rad) + PB6 * sin(10.0 * param.origin_lat_rad) +
-        PB7 * sin(12.0 * param.origin_lat_rad) + PB8 * sin(14.0 * param.origin_lat_rad) + PB9 * sin(16.0 * param.origin_lat_rad);
+  PSo = (double)PB1 * param.origin_lat_rad + PB2 * sin(2.0 * param.origin_lat_rad) +
+        PB3 * sin(4.0 * param.origin_lat_rad) + PB4 * sin(6.0 * param.origin_lat_rad) +
+        PB5 * sin(8.0 * param.origin_lat_rad) + PB6 * sin(10.0 * param.origin_lat_rad) +
+        PB7 * sin(12.0 * param.origin_lat_rad) + PB8 * sin(14.0 * param.origin_lat_rad) +
+        PB9 * sin(16.0 * param.origin_lat_rad);
 
   PDL = (double)lon_rad - param.origin_lon_rad;
   Pt = (double)tan(lat_rad);
@@ -369,9 +375,9 @@ void LLHConverter::revTM2Rad(const double& x, const double& y, const TMParam& pa
   double d5 = 4174 / 315. * n5 - 144838 / 6237. * n6;
   double d6 = 601676 / 22275. * n6;
 
-  double Sb = A0 * param.origin_lat_rad + A1 * std::sin(2 * param.origin_lat_rad) + A2 * std::sin(4 * param.origin_lat_rad) +
-              A3 * std::sin(6 * param.origin_lat_rad) + A4 * std::sin(8 * param.origin_lat_rad) +
-              A5 * std::sin(10 * param.origin_lat_rad);
+  double Sb = A0 * param.origin_lat_rad + A1 * std::sin(2 * param.origin_lat_rad) +
+              A2 * std::sin(4 * param.origin_lat_rad) + A3 * std::sin(6 * param.origin_lat_rad) +
+              A4 * std::sin(8 * param.origin_lat_rad) + A5 * std::sin(10 * param.origin_lat_rad);
   Sb = param.scale_factor * param.semi_major_axis / (1 + n) * Sb;
 
   double Ab = param.scale_factor * param.semi_major_axis / (1 + n) * A0;
@@ -393,7 +399,8 @@ void LLHConverter::revTM2Rad(const double& x, const double& y, const TMParam& pa
   lon_rad = param.origin_lon_rad + std::atan(std::sinh(eta1) / std::cos(eps1));
 }
 
-void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, const int grid_code, double& x, double& y)
+void LLHConverter::convRad2JPRCS(const double& lat_rad, const double& lon_rad, const int grid_code, double& x,
+                                 double& y)
 {
   TMParam tm_param = jprcs_tm_param_;
   tm_param.origin_lat_rad = jprcs_origin_lat_rads_[grid_code];
@@ -469,7 +476,8 @@ void LLHConverter::convRad2MGRS(const double& lat_rad, const double& lon_rad, do
   }
 }
 
-void LLHConverter::revMGRS2Rad(const double& x, const double& y, std::string mgrs_code, double& lat_rad, double& lon_rad)
+void LLHConverter::revMGRS2Rad(const double& x, const double& y, std::string mgrs_code, double& lat_rad,
+                               double& lon_rad)
 {
   auto [x_cross_num, x_in_grid] = getCrossNum(x);
   auto [y_cross_num, y_in_grid] = getCrossNum(y);
@@ -516,7 +524,7 @@ std::pair<int, double> LLHConverter::getCrossNum(const double& x)
 {
   int cross_num = 0;
   double ret_x = x;
-  double grid_size = 100000; // 100km
+  double grid_size = 100000;  // 100km
   while (ret_x >= grid_size)
   {
     ret_x -= grid_size;
@@ -533,12 +541,15 @@ std::pair<int, double> LLHConverter::getCrossNum(const double& x)
 
 std::string LLHConverter::getOffsetZone(const std::string& zone, const int& offset)
 {
-  if (offset == 0) return zone;
+  if (offset == 0)
+    return zone;
 
   int zone_num = mgrs_alphabet_.left.at(zone);
   zone_num += offset;
-  if (zone_num > 23) zone_num -= 24;
-  else if (zone_num < 0) zone_num += 24;
+  if (zone_num > 23)
+    zone_num -= 24;
+  else if (zone_num < 0)
+    zone_num += 24;
 
   return mgrs_alphabet_.right.at(zone_num);
 }
@@ -598,7 +609,7 @@ void LLHConverter::initializeJPRCSOrigins()
 
   jprcs_origin_lat_rads_[1] = (33.0 + 0.0 / 60.0) / 180.0 * M_PI;
   jprcs_origin_lon_rads_[1] = (129.0 + 30.0 / 60.0) / 180.0 * M_PI;
-  
+
   jprcs_origin_lat_rads_[2] = (33.0 + 0.0 / 60.0) / 180.0 * M_PI;
   jprcs_origin_lon_rads_[2] = (131.0 + 0.0 / 60.0) / 180.0 * M_PI;
 
@@ -660,11 +671,10 @@ void LLHConverter::initializeJPRCSOrigins()
 
 void LLHConverter::initializeMGRSAlphabet()
 {
-    mgrs_alphabet_ = makeBimap<std::string, int>({ { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },
-                                                   { "F", 5 },  { "G", 6 },  { "H", 7 },  { "J", 8 },  { "K", 9 },
-                                                   { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 },
-                                                   { "R", 15 }, { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 },
-                                                   { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
+  mgrs_alphabet_ = makeBimap<std::string, int>(
+      { { "A", 0 },  { "B", 1 },  { "C", 2 },  { "D", 3 },  { "E", 4 },  { "F", 5 },  { "G", 6 },  { "H", 7 },
+        { "J", 8 },  { "K", 9 },  { "L", 10 }, { "M", 11 }, { "N", 12 }, { "P", 13 }, { "Q", 14 }, { "R", 15 },
+        { "S", 16 }, { "T", 17 }, { "U", 18 }, { "V", 19 }, { "W", 20 }, { "X", 21 }, { "Y", 22 }, { "Z", 23 } });
 }
 
 double LLHConverter::getMeridianConvergenceRad(const double x, const double y, const LLHParam& param)

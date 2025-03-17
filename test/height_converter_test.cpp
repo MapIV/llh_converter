@@ -56,11 +56,13 @@ void test2(const double result0, const double result1, const double answer0, con
   int i_answer1 = std::round(answer1 * 10000);
   if (i_result0 == i_answer0 && i_result1 == i_answer1)
   {
-    std::cout << "\033[32;1mTEST SUCCESS: " << result0 << ", " << result1 << " == " << answer0 << ", " << answer1 << "\033[m" << std::endl;
+    std::cout << "\033[32;1mTEST SUCCESS: " << result0 << ", " << result1 << " == " << answer0 << ", " << answer1
+              << "\033[m" << std::endl;
   }
   else
   {
-    std::cout << "\033[31;1mTEST FAILED : " << result0 << ", " << result1 << " != " << answer0 << ", " << answer1 << "\033[m" << std::endl;
+    std::cout << "\033[31;1mTEST FAILED : " << result0 << ", " << result1 << " != " << answer0 << ", " << answer1
+              << "\033[m" << std::endl;
   }
 }
 

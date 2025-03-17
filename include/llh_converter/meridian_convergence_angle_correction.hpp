@@ -49,7 +49,7 @@ struct XYZ
   double z;
 };
 
-double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param);
+double getMeridianConvergence(const LLA& lla, const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param);
 double getMeridianConvergence(const LLA& lla, LLHConverter& llhc, const LLHParam& llhc_param);
 double getMeridianConvergence(const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param);
 }  // namespace llh_converter
