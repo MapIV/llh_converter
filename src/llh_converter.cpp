@@ -632,16 +632,16 @@ void LLHConverter::initializeJPRCSOrigins()
   jprcs_origin_lon_rads_[8] = (138.0 + 30.0 / 60.0) / 180.0 * M_PI;
 
   jprcs_origin_lat_rads_[9] = (36.0 + 0.0 / 60.0) / 180.0 * M_PI;
-  jprcs_origin_lon_rads_[9] = (138.0 + 30.0 / 60.0) / 180.0 * M_PI;
+  jprcs_origin_lon_rads_[9] = (139.0 + 50.0 / 60.0) / 180.0 * M_PI;
 
   jprcs_origin_lat_rads_[10] = (40.0 + 0.0 / 60.0) / 180.0 * M_PI;
   jprcs_origin_lon_rads_[10] = (140.0 + 50.0 / 60.0) / 180.0 * M_PI;
 
-  jprcs_origin_lat_rads_[11] = (36.0 + 0.0 / 60.0) / 180.0 * M_PI;
-  jprcs_origin_lon_rads_[11] = (139.0 + 50.0 / 60.0) / 180.0 * M_PI;
+  jprcs_origin_lat_rads_[11] = (44.0 + 0.0 / 60.0) / 180.0 * M_PI;
+  jprcs_origin_lon_rads_[11] = (140.0 + 15.0 / 60.0) / 180.0 * M_PI;
 
-  jprcs_origin_lat_rads_[12] = (40.0 + 0.0 / 60.0) / 180.0 * M_PI;
-  jprcs_origin_lon_rads_[12] = (140.0 + 50.0 / 60.0) / 180.0 * M_PI;
+  jprcs_origin_lat_rads_[12] = (44.0 + 0.0 / 60.0) / 180.0 * M_PI;
+  jprcs_origin_lon_rads_[12] = (142.0 + 15.0 / 60.0) / 180.0 * M_PI;
 
   jprcs_origin_lat_rads_[13] = (44.0 + 0.0 / 60.0) / 180.0 * M_PI;
   jprcs_origin_lon_rads_[13] = (140.0 + 15.0 / 60.0) / 180.0 * M_PI;
