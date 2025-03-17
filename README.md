@@ -1,6 +1,6 @@
 # llh_converter
 
-(Updated 2022/03/24)
+(Updated 2025/03/17)
 
 This repository has two class implementation.
 
@@ -17,6 +17,7 @@ Convert height between ellipsoid and orthometric library
 
 * EGM2008-1
 * GSIGEO2011 Ver2.1
+* GSIGEO2024beta (Data file will be updated in 2025/04)
 
 ### Usage
 
@@ -27,7 +28,7 @@ hc.setGeoidType(height_converter::GeoidType::GSIGEO2011); // Select Geoid Model
 // hc.setGeoidType(height_converter::GeoidType::EGM2008);
 
 hc.setGSIGEOGeoidFile(path_to_gsigeo_asc_file);   // Load geoid data file when you select GSIGEO
-// hc.setGSIGEOGeoidFile();  // If called with void, it try to read /usr/share/GSIGEO/gsigeo2011_ver2_1.asc
+// hc.setGSIGEOGeoidFile();  // If called with void, it try to read geoid data files under /usr/share/GSIGEO/
 
 double geoid_heith = hc.getGeoid(lat, lon);   // Get geoid heigth with latitude/longitude in decimal degree
 
@@ -46,19 +47,29 @@ Convert latitude/longitude/altitude into XYZ coordinate system.
 
 * Millitary Grid Reference System (MGRS)
 * Japan Plane Rectangular Coordinate System (JPRCS)
+* Transverse Mercator with an arbitrary origin (TM)
 
 ### Usage
 
 ```
 llh_converter::LLHConverter lc;
-llh_converter::LLHParam param;  // parameter for conversion
-param.use_mgrs = true;          // set true if you want to use MGRS
-param.plane_num = 9;            // set the plane number when you use JPRCS
-param.mgrs_code = "53SPU";      // MGRS grid code is required when you revert MGRS x/y into lat/lon
+llh_converter::LLHParam param;              // parameter for conversion
+param.projection_method = llh_converter::ProjectionMethod::TM;
+                                            // set the projection method TM/JPRCS/MGRS
+param.plane_num = "9";                        // set the grid code for JPRCS/MGRS
+                                            // for MGRS, it's required only when reverting to lat/lon
 param.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
-                                // You can also convert height
+                                            // You can also convert height
 param.geoid_type = llh_converter::GeoidType::EGM2008;
-                                // Set geoid model
+                                            // Set geoid model
+// The following tm_param is required only when the projection method is TM
+param.tm_param.inv_flatten_ratio = 298.257222101;
+                                            // Set the inverse flattening ratio
+param.tm_param.semi_mejor_axis = 6378137.0; // Set the semi-major axis
+param.tm_param.scale_factor = 0.9996;       // Set the scale factor
+param.tm_param.origin_lat_rad = 35.0 * M_PI / 180.;
+param.tm_param.origin_lon_rad = 139.0 * M_PI / 180.;
+                                            // Set the origin
 
 double lat_deg, lon_deg, alt;
 double lat_rad = lat_deg * M_PI / 180.;
@@ -87,8 +98,8 @@ The meridian convergence angle is calculated by the `getMeridianConvergence()` f
 ```
   llh_converter::LLHConverter lc;
   llh_converter::LLHParam param;
-  param.use_mgrs = false;
-  param.plane_num = 7;
+  param.projection_method = llh_converter::ProjectionMethod::JPRCS;
+  param.grid_code = "7";
   param.height_convert_type = llh_converter::ConvertType::NONE;
   param.geoid_type = llh_converter::GeoidType::EGM2008;
 

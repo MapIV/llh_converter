@@ -32,18 +32,18 @@
 
 namespace llh_converter
 {
-double getMeridianConvergence(const LLA &lla, const XYZ &xyz, LLHConverter &llhc,  const LLHParam &llhc_param)
+double getMeridianConvergence(const LLA& lla, const XYZ& xyz, LLHConverter& llhc, const LLHParam& llhc_param)
 {
   LLA offset_lla = lla;
   XYZ offset_by_cartesian = xyz;
 
   XYZ offset_by_geodetic;
 
-  offset_lla.latitude += 0.01;  // neary 1.11km. This value has no special meaning.
-  offset_by_cartesian.y += 1000.0; // 1km. This value has no special meaning.
+  offset_lla.latitude += 0.01;      // neary 1.11km. This value has no special meaning.
+  offset_by_cartesian.y += 1000.0;  // 1km. This value has no special meaning.
 
   llhc.convertDeg2XYZ(offset_lla.latitude, offset_lla.longitude, offset_lla.altitude, offset_by_geodetic.x,
-                       offset_by_geodetic.y, offset_by_geodetic.z, llhc_param);
+                      offset_by_geodetic.y, offset_by_geodetic.z, llhc_param);
 
   double cartesian_diff_x = offset_by_cartesian.x - xyz.x;
   double cartesian_diff_y = offset_by_cartesian.y - xyz.y;
