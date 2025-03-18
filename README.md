@@ -65,7 +65,7 @@ param.geoid_type = llh_converter::GeoidType::EGM2008;
 // The following tm_param is required only when the projection method is TM
 param.tm_param.inv_flatten_ratio = 298.257222101;
                                             // Set the inverse flattening ratio
-param.tm_param.semi_mejor_axis = 6378137.0; // Set the semi-major axis
+param.tm_param.semi_major_axis = 6378137.0; // Set the semi-major axis
 param.tm_param.scale_factor = 0.9996;       // Set the scale factor
 param.tm_param.origin_lat_rad = 35.0 * M_PI / 180.;
 param.tm_param.origin_lon_rad = 139.0 * M_PI / 180.;
