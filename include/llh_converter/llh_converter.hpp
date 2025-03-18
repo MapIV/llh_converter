@@ -56,8 +56,8 @@ enum class MGRSPrecision
 enum class ProjectionMethod
 {
   TM = 0,
-  JPRCS = 1,
-  MGRS = 2,
+  MGRS = 1,
+  JPRCS = 2,
 };
 
 struct TMParam
