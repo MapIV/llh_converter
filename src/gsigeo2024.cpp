@@ -40,11 +40,11 @@
 namespace llh_converter
 {
 
-GSIGEO2024::GSIGEO2024() {}
+JPGEO2024::JPGEO2024() {}
 
-GSIGEO2024::~GSIGEO2024() {}
+JPGEO2024::~JPGEO2024() {}
 
-void GSIGEO2024::loadGeoidMap(const std::string &geoid_file)
+void JPGEO2024::loadGeoidMap(const std::string &geoid_file)
 {
     std::ifstream infile(geoid_file);
     if (!infile)
@@ -87,7 +87,7 @@ void GSIGEO2024::loadGeoidMap(const std::string &geoid_file)
     is_geoid_loaded_ = true;
 }
 
-double GSIGEO2024::getGeoid(const double &lat, const double &lon)
+double JPGEO2024::getGeoid(const double &lat, const double &lon)
 {
     if (!is_geoid_loaded_)
     {
