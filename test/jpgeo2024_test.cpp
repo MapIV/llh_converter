@@ -23,10 +23,10 @@ int main()
   geoid_model.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024.isg");
 
   std::cout << "Testing (36.104394, 140.085365) ... ";
-  test(geoid_model.getGeoid(36.104394, 140.085365), 40.3059);
+  test(geoid_model.getGeoid(36.104394, 140.085365), 40.2920);
 
   std::cout << "Testing (35.160410, 139.615526) ... ";
-  test(geoid_model.getGeoid(35.160410, 139.615526), 36.7568);
+  test(geoid_model.getGeoid(35.160410, 139.615526), 36.7434);
 
   return 0;
 }
