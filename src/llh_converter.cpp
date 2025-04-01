@@ -49,7 +49,7 @@ boost::bimaps::bimap<L, R> makeBimap(std::initializer_list<typename boost::bimap
 LLHConverter::LLHConverter()
 {
   height_converter_.loadGSIGEOGeoidFile();
-  height_converter_.loadGSIGEO2024GeoidFile();
+  height_converter_.loadJPGEO2024GeoidFile();
   initializeJPRCSOrigins();
   initializeMGRSAlphabet();
 }
