@@ -28,19 +28,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef M4_GSIGEO2024_HPP
-#define M4_GSIGEO2024_HPP
+#ifndef M4_JPGEO2024_HPP
+#define M4_JPGEO2024_HPP
 
 #include <string>
 #include <vector>
 
 namespace llh_converter
 {
-class GSIGEO2024
+class JPGEO2024
 {
 public:
-  GSIGEO2024();
-  ~GSIGEO2024();
+  JPGEO2024();
+  ~JPGEO2024();
   void loadGeoidMap(const std::string& geoid_file);
   double getGeoid(const double& lat, const double& lon);
 

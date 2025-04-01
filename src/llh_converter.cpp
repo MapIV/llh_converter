@@ -50,7 +50,7 @@ makeBimap(std::initializer_list<typename boost::bimaps::bimap<L, R>::value_type>
 LLHConverter::LLHConverter()
 {
   height_converter_.loadGSIGEOGeoidFile();
-  height_converter_.loadGSIGEO2024GeoidFile();
+  height_converter_.loadJPGEO2024GeoidFile();
   initializeMGRSAlphabet();
 }
 

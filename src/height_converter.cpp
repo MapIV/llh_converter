@@ -90,8 +90,8 @@ double HeightConverter::getGeoidDeg(const double& lat_deg, const double& lon_deg
       return getGeoidEGM2008(lat_deg, lon_deg);
     case GeoidType::GSIGEO2011:
       return getGeoidGSIGEO2011(lat_deg, lon_deg);
-    case GeoidType::GSIGEO2024:
-      return getGeoidGSIGEO2024(lat_deg, lon_deg);
+    case GeoidType::JPGEO2024:
+      return getGeoidJPGEO2024(lat_deg, lon_deg);
   }
 }
 
@@ -105,14 +105,14 @@ void HeightConverter::loadGSIGEOGeoidFile()
   gsigeo2011_.loadGeoidMap("/usr/share/GSIGEO/gsigeo2011_ver2_1.asc");
 }
 
-void HeightConverter::loadGSIGEO2024GeoidFile(const std::string& geoid_file)
+void HeightConverter::loadJPGEO2024GeoidFile(const std::string& geoid_file)
 {
-  gsigeo2024_.loadGeoidMap(geoid_file);
+  jpgeo2024_.loadGeoidMap(geoid_file);
 }
 
-void HeightConverter::loadGSIGEO2024GeoidFile()
+void HeightConverter::loadJPGEO2024GeoidFile()
 {
-  gsigeo2024_.loadGeoidMap("/usr/share/GSIGEO/GSIGEO2024beta.isg");
+  jpgeo2024_.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024.isg");
 }
 
 double HeightConverter::getGeoidEGM2008(const double& lat_deg, const double& lon_deg)
@@ -133,8 +133,8 @@ double HeightConverter::getGeoidGSIGEO2011(const double& lat_deg, const double& 
   return gsigeo2011_.getGeoid(lat_deg, lon_deg);
 }
 
-double HeightConverter::getGeoidGSIGEO2024(const double& lat_deg, const double& lon_deg)
+double HeightConverter::getGeoidJPGEO2024(const double& lat_deg, const double& lon_deg)
 {
-  return gsigeo2024_.getGeoid(lat_deg, lon_deg);
+  return jpgeo2024_.getGeoid(lat_deg, lon_deg);
 }
 }  // namespace llh_converter
