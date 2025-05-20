@@ -56,7 +56,7 @@ llh_converter::LLHConverter lc;
 llh_converter::LLHParam param;              // parameter for conversion
 param.projection_method = llh_converter::ProjectionMethod::TM;
                                             // set the projection method TM/JPRCS/MGRS
-param.plane_num = "9";                        // set the grid code for JPRCS/MGRS
+param.grid_code = "9";                        // set the grid code for JPRCS/MGRS
                                             // for MGRS, it's required only when reverting to lat/lon
 param.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
                                             // You can also convert height
