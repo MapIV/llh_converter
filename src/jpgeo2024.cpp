@@ -90,6 +90,53 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file)
   is_geoid_loaded_ = true;
 }
 
+void JPGEO2024::loadGeoidMap(const std::string& geoid_file, const std::string& hrefconv_file)
+{
+  loadGeoidMap(geoid_file);
+
+  std::ifstream infile(hrefconv_file);
+  if (!infile)
+  {
+    std::cerr << "Error opening file: " << hrefconv_file << std::endl;
+    return;
+  }
+
+  std::string line;
+  bool header_end = false;
+  while (std::getline(infile, line))
+  {
+    if (line.find("end_of_head") != std::string::npos)
+    {
+      header_end = true;
+      break;
+    }
+  }
+
+  if (!header_end)
+  {
+    std::cerr << "Header not properly formatted in file." << std::endl;
+    return;
+  }
+
+  for (int i = 0; i < row_size_; ++i)
+  {
+    for (int j = 0; j < column_size_; ++j)
+    {
+      double tmp;
+      if (!(infile >> tmp))
+      {
+        std::cerr << "Error reading geoid data at row " << i << ", col " << j << std::endl;
+        return;
+      }
+
+      if (tmp > -9998.0)
+      {
+        geoid_map_[i][j] += tmp;
+      }
+    }
+  }
+}
+
 double JPGEO2024::getGeoid(const double& lat, const double& lon)
 {
   if (!is_geoid_loaded_)
