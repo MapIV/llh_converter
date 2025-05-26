@@ -17,7 +17,7 @@ Convert height between ellipsoid and orthometric library
 
 * EGM2008-1
 * GSIGEO2011 Ver2.1
-* JPGEO2024
+* JPGEO2024 + Hrefconv2024
 
 ### Usage
 
@@ -126,7 +126,7 @@ git clone https://github.com/MapIV/llh_converter.git
 sudo mkdir /usr/share/GSIGEO
 sudo cp llh_converter/data/gsigeo2011_ver2_1.asc /usr/share/GSIGEO/
 unzip llh_converter/data/JPGEO2024.zip
-sudo mv JPGEO2024.isg /usr/share/GSIGEO/
+sudo mv JPGEO2024.isg Hrefconv2024.isg /usr/share/GSIGEO/
 cd ../
 catkin_make -DCMAKE_BUILD_TYPE=Release
 ```
