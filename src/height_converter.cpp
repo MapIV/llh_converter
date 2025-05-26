@@ -34,12 +34,12 @@
 
 namespace llh_converter
 {
-static std::vector<std::string> geoid_strings = { "EGM2008", "GSIGEO2011", "NONE" };
+static std::vector<std::string> geoid_strings = { "EGM2008", "GSIGEO2011", "JPGEO2024", "NONE" };
 
 std::string getStringFromGeoidType(const GeoidType& geoid)
 {
   int enum_val = static_cast<int>(geoid);
-  // 0: EGM2008, 1: GSIGEO2011
+  // 0: EGM2008, 1: GSIGEO2011 2: JPGEO2024 3: NONE
   return geoid_strings[enum_val];
 }
 
