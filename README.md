@@ -125,8 +125,8 @@ cd test_ws/src/
 git clone https://github.com/MapIV/llh_converter.git
 sudo mkdir /usr/share/GSIGEO
 sudo cp llh_converter/data/gsigeo2011_ver2_1.asc /usr/share/GSIGEO/
-unzip llh_converter/data/JPGEO2024.zip
-sudo mv JPGEO2024.isg /usr/share/GSIGEO/
+unzip llh_converter/data/JPGEO2024+Hrefconv2024.isg.zip
+sudo mv JPGEO2024+Hrefconv2024.isg /usr/share/GSIGEO/
 cd ../
 catkin_make -DCMAKE_BUILD_TYPE=Release
 ```

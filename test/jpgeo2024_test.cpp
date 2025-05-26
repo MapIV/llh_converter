@@ -20,7 +20,7 @@ void test(const double& result, const double& answer)
 int main()
 {
   llh_converter::JPGEO2024 geoid_model;
-  geoid_model.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024.isg");
+  geoid_model.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024+Hrefconv2024.isg");
 
   std::cout << "Testing (36.104394, 140.085365) ... ";
   test(geoid_model.getGeoid(36.104394, 140.085365), 40.2920);

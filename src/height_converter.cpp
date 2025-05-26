@@ -112,7 +112,7 @@ void HeightConverter::loadJPGEO2024GeoidFile(const std::string& geoid_file)
 
 void HeightConverter::loadJPGEO2024GeoidFile()
 {
-  jpgeo2024_.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024.isg");
+  jpgeo2024_.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024+Hrefconv2024.isg");
 }
 
 double HeightConverter::getGeoidEGM2008(const double& lat_deg, const double& lon_deg)
