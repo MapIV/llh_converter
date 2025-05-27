@@ -105,9 +105,9 @@ void HeightConverter::loadGSIGEOGeoidFile()
   gsigeo2011_.loadGeoidMap("/usr/share/GSIGEO/gsigeo2011_ver2_1.asc");
 }
 
-void HeightConverter::loadJPGEO2024GeoidFile(const std::string& geoid_file)
+void HeightConverter::loadJPGEO2024GeoidFile(const std::string& geoid_file, const std::string& hrefconv_file)
 {
-  jpgeo2024_.loadGeoidMap(geoid_file);
+  jpgeo2024_.loadGeoidMap(geoid_file, hrefconv_file);
 }
 
 void HeightConverter::loadJPGEO2024GeoidFile()

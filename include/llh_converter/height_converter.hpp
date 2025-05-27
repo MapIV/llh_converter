@@ -68,7 +68,7 @@ public:
   double getGeoidDeg(const double& lat_deg, const double& lon_deg);
   void loadGSIGEOGeoidFile(const std::string& geoid_file);
   void loadGSIGEOGeoidFile();
-  void loadJPGEO2024GeoidFile(const std::string& geoid_file);
+  void loadJPGEO2024GeoidFile(const std::string& geoid_file, const std::string& hrefconv_file);
   void loadJPGEO2024GeoidFile();
 
 private:
