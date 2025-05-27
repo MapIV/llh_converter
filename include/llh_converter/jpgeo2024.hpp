@@ -42,6 +42,7 @@ public:
   JPGEO2024();
   ~JPGEO2024();
   void loadGeoidMap(const std::string& geoid_file);
+  void loadGeoidMap(const std::string& geoid_file, const std::string& hrefconv_file);
   double getGeoid(const double& lat, const double& lon);
 
 private:
