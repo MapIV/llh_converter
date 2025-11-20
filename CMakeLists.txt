@@ -6,12 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(catkin REQUIRED COMPONENTS)
 
 find_package(PkgConfig)
-find_path(GeographicLib INCLUDE_DIR GeographicLib/config.h
-  PATH_SUFFIXES GeographicLib
-)
-set(GeographicLib_LIBRARIES
-  NAMES Geographic
-)
+find_package(GeographicLib REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -33,7 +28,7 @@ add_library(llh_converter SHARED
   src/llh_converter.cpp
   src/meridian_convergence_angle_correction.cpp
 )
-target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
+target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} ${GeographicLib_LIBRARIES})
 add_dependencies(llh_converter ${catkin_EXPORTED_TARGETS})
 
 add_executable(llh_test test/height_converter_test.cpp)
