@@ -41,8 +41,6 @@ ament_auto_add_library(llh_converter SHARED
 
 target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} ${GeographicLib_LIBRARIES})
 
-ament_auto_find_build_dependencies()
-
 install(TARGETS llh_converter
   INCLUDES DESTINATION include
 )
