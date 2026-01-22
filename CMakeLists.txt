@@ -11,13 +11,12 @@ endif()
 
 find_package(ament_cmake_auto REQUIRED)
 
+# GeographicLib
 find_package(PkgConfig)
-find_path(GeographicLib INCLUDE_DIR GeographicLib/config.h
+find_path(GeographicLib_INCLUDE_DIR GeographicLib/Config.h
   PATH_SUFFIXES GeographicLib
 )
-set(GeographicLib_LIBRARIES
-  NAMES Geographic
-)
+find_library(GeographicLib_LIBRARIES NAMES Geographic GeographicLib)
 
 ament_auto_find_build_dependencies()
 
@@ -40,9 +39,7 @@ ament_auto_add_library(llh_converter SHARED
   include/llh_converter/meridian_convergence_angle_correction.hpp
 )
 
-target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} Geographic)
-
-ament_auto_find_build_dependencies()
+target_link_libraries(llh_converter PUBLIC ${catkin_LIBRARIES} ${GeographicLib_LIBRARIES})
 
 install(TARGETS llh_converter
   INCLUDES DESTINATION include
