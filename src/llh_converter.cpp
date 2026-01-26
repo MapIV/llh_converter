@@ -98,14 +98,10 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
   height_converter_.setGeoidType(param.geoid_type);
   z = height_converter_.convertHeightRad(lat_rad, lon_rad, h, param.height_convert_type);
 
-  // Apply vertical datum correction (bidirectional)
+  // Apply height offset correction (ORTHO時のみ)
   if (param.height_convert_type == ConvertType::ELLIPS2ORTHO)
   {
-    z += param.vertical_datum_offset;  // Forward: T.P. + offset = vertical datum height
-  }
-  else if (param.height_convert_type == ConvertType::ORTHO2ELLIPS)
-  {
-    z -= param.vertical_datum_offset;  // Reverse: vertical datum height - offset = T.P.
+    z += param.height_offset;  // T.P. + offset = final height
   }
 }
 
