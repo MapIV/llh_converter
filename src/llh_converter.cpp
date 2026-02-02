@@ -101,7 +101,7 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
   // Apply height offset correction (ORTHO時のみ)
   if (param.height_convert_type == ConvertType::ELLIPS2ORTHO)
   {
-    z += param.height_offset;  // T.P. + offset = final height
+    z += param.orthometric_height_offset;  // T.P. + offset = final height
   }
 }
 

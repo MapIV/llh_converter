@@ -77,7 +77,7 @@ struct LLHParam
   ConvertType height_convert_type;
   GeoidType geoid_type;
   TMParam tm_param;
-  double height_offset = 0.0;  // Offset from T.P. in meters (T.P.からの高さオフセット[m])
+  double orthometric_height_offset = 0.0;  // Offset from T.P. in meters (T.P.からの高さオフセット[m])
 };
 
 class LLHConverter
