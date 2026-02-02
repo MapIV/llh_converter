@@ -70,7 +70,7 @@ int main()
     param_no_offset.grid_code = "7";
     param_no_offset.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
     param_no_offset.geoid_type = llh_converter::GeoidType::JPGEO2024;
-    param_no_offset.height_offset = 0.0;  // Default value
+    param_no_offset.orthometric_height_offset = 0.0;  // Default value
 
     double lat_deg = 35.6895;
     double lon_deg = 139.6917;
@@ -94,10 +94,10 @@ int main()
     param_no_offset.grid_code = "7";
     param_no_offset.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
     param_no_offset.geoid_type = llh_converter::GeoidType::JPGEO2024;
-    param_no_offset.height_offset = 0.0;
+    param_no_offset.orthometric_height_offset = 0.0;
 
     llh_converter::LLHParam param_with_offset = param_no_offset;
-    param_with_offset.height_offset = -1.134;  // A.P. offset from T.P.
+    param_with_offset.orthometric_height_offset = -1.134;  // A.P. offset from T.P.
 
     double lat_deg = 35.6895;
     double lon_deg = 139.6917;
@@ -129,10 +129,10 @@ int main()
     param_tp.grid_code = "7";
     param_tp.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
     param_tp.geoid_type = llh_converter::GeoidType::JPGEO2024;
-    param_tp.height_offset = 0.0;
+    param_tp.orthometric_height_offset = 0.0;
 
     llh_converter::LLHParam param_positive = param_tp;
-    param_positive.height_offset = 2.0;
+    param_positive.orthometric_height_offset = 2.0;
 
     double lat_deg = 35.6895;
     double lon_deg = 139.6917;
@@ -162,10 +162,10 @@ int main()
     param_tp.grid_code = "7";
     param_tp.height_convert_type = llh_converter::ConvertType::ELLIPS2ORTHO;
     param_tp.geoid_type = llh_converter::GeoidType::JPGEO2024;
-    param_tp.height_offset = 0.0;
+    param_tp.orthometric_height_offset = 0.0;
 
     llh_converter::LLHParam param_yp = param_tp;
-    param_yp.height_offset = -1.09;  // Y.P. offset from T.P.
+    param_yp.orthometric_height_offset = -1.09;  // Y.P. offset from T.P.
 
     double lat_deg = 35.4437;
     double lon_deg = 139.6452;
@@ -195,7 +195,7 @@ int main()
     param_ellips.grid_code = "7";
     param_ellips.height_convert_type = llh_converter::ConvertType::NONE;  // ELLIPS
     param_ellips.geoid_type = llh_converter::GeoidType::JPGEO2024;
-    param_ellips.height_offset = -1.134;
+    param_ellips.orthometric_height_offset = -1.134;
 
     double lat_deg = 35.6895;
     double lon_deg = 139.6917;
