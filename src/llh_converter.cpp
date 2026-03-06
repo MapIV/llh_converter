@@ -97,6 +97,12 @@ void LLHConverter::convertRad2XYZ(const double& lat_rad, const double& lon_rad, 
   // Convert h to z
   height_converter_.setGeoidType(param.geoid_type);
   z = height_converter_.convertHeightRad(lat_rad, lon_rad, h, param.height_convert_type);
+
+  // Apply height offset correction (only for orthometric height)
+  if (param.height_convert_type == ConvertType::ELLIPS2ORTHO)
+  {
+    z += param.orthometric_height_offset;  // T.P. + offset = final height
+  }
 }
 
 void LLHConverter::revertXYZ2Deg(const double& x, const double& y, double& lat_deg, double& lon_deg,
