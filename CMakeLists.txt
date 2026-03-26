@@ -22,7 +22,7 @@ ament_auto_find_build_dependencies()
 
 include_directories(
   include
-  ${GeographicLib_INCLUDE_DIRS}
+  ${GeographicLib_INCLUDE_DIR}
 )
 link_directories(
   /usr/local/lib
@@ -53,11 +53,12 @@ install(TARGETS llh_converter
 
 target_include_directories(llh_converter
   PUBLIC
+    ${GeographicLib_INCLUDE_DIR}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-ament_export_include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+ament_export_include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${GeographicLib_INCLUDE_DIR})
 
 ament_export_libraries(llh_converter)
 

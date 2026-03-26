@@ -1,0 +1,36 @@
+name: build
+on: pull_request
+
+jobs:
+  jazzy_build:
+    runs-on: ubuntu-24.04
+
+    container: ros:jazzy
+    services:
+      ros:
+        image: ros
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: rosdep update
+        run: |
+          apt-get update
+          rosdep update
+      - name: Create Workspace
+        run: |
+          mkdir -p ~/ros2_ws/src/
+          cp -r "$(pwd)" ~/ros2_ws/src/
+      - name: Install GeographicLib
+        run: |
+          apt-get install -y libgeographiclib-dev geographiclib-tools geographiclib-doc
+      - name: Build
+        run: |
+          cd ~/ros2_ws/
+          source /opt/ros/jazzy/setup.bash
+          rosdep install --from-paths src --ignore-src -r -y
+          colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --catkin-skip-building-tests
