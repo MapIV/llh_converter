@@ -31,6 +31,7 @@
 #include "llh_converter/height_converter.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 namespace llh_converter
 {
@@ -92,7 +93,11 @@ double HeightConverter::getGeoidDeg(const double& lat_deg, const double& lon_deg
       return getGeoidGSIGEO2011(lat_deg, lon_deg);
     case GeoidType::JPGEO2024:
       return getGeoidJPGEO2024(lat_deg, lon_deg);
+    case GeoidType::NONE:
+      return 0.0;
   }
+
+  throw std::runtime_error("Error: Unsupported geoid type");
 }
 
 void HeightConverter::loadGSIGEOGeoidFile(const std::string& geoid_file)
@@ -123,8 +128,7 @@ double HeightConverter::getGeoidEGM2008(const double& lat_deg, const double& lon
   }
   catch (const GeographicLib::GeographicErr& e)
   {
-    std::cerr << "GeographicLib Error: " << e.what() << std::endl;
-    exit(EXIT_FAILURE);
+    throw std::runtime_error("GeographicLib Error: " + std::string(e.what()));
   }
 }
 
