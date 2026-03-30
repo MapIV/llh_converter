@@ -47,6 +47,10 @@ add_executable(jpgeo2024_test test/jpgeo2024_test.cpp)
 target_link_libraries(jpgeo2024_test ${catkin_LIBRARIES} llh_converter)
 add_dependencies(jpgeo2024_test ${catkin_EXPORTED_TARGETS})
 
+add_executable(height_offset_test test/height_offset_test.cpp)
+target_link_libraries(height_offset_test ${catkin_LIBRARIES} llh_converter)
+add_dependencies(height_offset_test ${catkin_EXPORTED_TARGETS})
+
 install(DIRECTORY include/llh_converter/
   DESTINATION include/llh_converter
   FILES_MATCHING PATTERN "*.hpp"
