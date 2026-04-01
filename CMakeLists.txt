@@ -1,12 +1,16 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.14)
 project(llh_converter)
 
 set(CMAKE_CXX_STANDARD 17)
 
+if(WIN32)
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 find_package(catkin REQUIRED COMPONENTS)
 
-find_package(PkgConfig)
 find_package(GeographicLib REQUIRED)
+find_package(Boost REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -16,6 +20,7 @@ catkin_package(
 include_directories(
   include
   ${GeographicLib_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 link_directories(
   /usr/local/lib
