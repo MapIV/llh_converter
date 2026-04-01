@@ -86,6 +86,29 @@ int main(int argc, char** argv)
     }
   };
 
+  auto test_throw_contains =
+    [&](const std::string& label, const std::function<void()>& func, const std::string& expected_message) {
+      std::cout << label;
+      try
+      {
+        func();
+        std::cout << "\033[31;1mTEST FAILED : expected exception\033[m" << std::endl;
+        has_failure = true;
+      }
+      catch (const std::exception& e)
+      {
+        if (std::string(e.what()).find(expected_message) != std::string::npos)
+        {
+          std::cout << "\033[32;1mTEST SUCCESS: " << e.what() << "\033[m" << std::endl;
+        }
+        else
+        {
+          std::cout << "\033[31;1mTEST FAILED : unexpected message: " << e.what() << "\033[m" << std::endl;
+          has_failure = true;
+        }
+      }
+    };
+
   // GSIGEO Test
   std::cout << "GSIGEO2011 Test" << std::endl;
   hc.setGeoidType(llh_converter::GeoidType::GSIGEO2011);
@@ -133,9 +156,11 @@ int main(int argc, char** argv)
 
   std::cout << "Out of range geoid error test" << std::endl;
   hc.setGeoidType(llh_converter::GeoidType::GSIGEO2011);
-  test_throw("Testing GSIGEO2011 out of range ... ", [&]() { hc.getGeoidDeg(35.0, 100.0); });
+  test_throw_contains("Testing GSIGEO2011 out of range ... ", [&]() { hc.getGeoidDeg(35.0, 100.0); },
+                      "Error: latitude/longitude is out of range");
   hc.setGeoidType(llh_converter::GeoidType::JPGEO2024);
-  test_throw("Testing JPGEO2024 out of range ... ", [&]() { hc.getGeoidDeg(35.0, 100.0); });
+  test_throw_contains("Testing JPGEO2024 out of range ... ", [&]() { hc.getGeoidDeg(35.0, 100.0); },
+                      "Error: latitude/longitude is out of range");
 
   // LLHConverter test
   std::cout << "LLHConverter Test" << std::endl;
@@ -157,11 +182,13 @@ int main(int argc, char** argv)
   llh_converter::LLHParam tm_param = param;
   tm_param.projection_method = llh_converter::ProjectionMethod::TM;
   tm_param.geoid_type = llh_converter::GeoidType::JPGEO2024;
-  test_throw("Testing LLHConverter JPGEO2024 out of range ... ",
-             [&]() { llh_converter.convertDeg2XYZ(overseas_lat, overseas_lon, 50, x, y, z, tm_param); });
+  test_throw_contains("Testing LLHConverter JPGEO2024 out of range ... ",
+                      [&]() { llh_converter.convertDeg2XYZ(overseas_lat, overseas_lon, 50, x, y, z, tm_param); },
+                      "Error: latitude/longitude is out of range");
   tm_param.geoid_type = llh_converter::GeoidType::GSIGEO2011;
-  test_throw("Testing LLHConverter GSIGEO2011 out of range ... ",
-             [&]() { llh_converter.convertDeg2XYZ(overseas_lat, overseas_lon, 50, x, y, z, tm_param); });
+  test_throw_contains("Testing LLHConverter GSIGEO2011 out of range ... ",
+                      [&]() { llh_converter.convertDeg2XYZ(overseas_lat, overseas_lon, 50, x, y, z, tm_param); },
+                      "Error: latitude/longitude is out of range");
   std::cout << "Testing MGRS  ... ";
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
   test2(x, y, 45346.7389, 28608.3575);

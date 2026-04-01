@@ -154,7 +154,7 @@ double JPGEO2024::getGeoid(const double& lat, const double& lon)
   if (lat < 15.0 || lat > 50.0 || lon < 120.0 || lon > 160.0)
   {
     std::ostringstream oss;
-    oss << "Input coordinates out of range: " << lat << ", " << lon;
+    oss << "Error: latitude/longitude is out of range (15~50, 120~160): " << lat << ", " << lon;
     throwGeoidError(oss.str());
   }
 
@@ -171,7 +171,9 @@ double JPGEO2024::getGeoid(const double& lat, const double& lon)
 
   if (i1 < 0 || i2 >= row_size_ || j1 < 0 || j2 >= column_size_)
   {
-    throwGeoidError("Input coordinates are outside the JPGEO2024 grid.");
+    std::ostringstream oss;
+    oss << "Error: latitude/longitude is outside the JPGEO2024 grid: " << lat << ", " << lon;
+    throwGeoidError(oss.str());
   }
 
   // Geoid height at the four corners
@@ -182,7 +184,9 @@ double JPGEO2024::getGeoid(const double& lat, const double& lon)
 
   if (f00 == -9999.0 || f10 == -9999.0 || f01 == -9999.0 || f11 == -9999.0)
   {
-    throwGeoidError("Error: Not supported area");
+    std::ostringstream oss;
+    oss << "Error: Not supported area at coordinates: " << lat << ", " << lon;
+    throwGeoidError(oss.str());
   }
 
   // Coordinates of the four corners
