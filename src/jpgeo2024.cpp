@@ -35,10 +35,19 @@
 #include <sstream>
 #include <cmath>
 #include <iomanip>
+#include <stdexcept>
 
 #include <boost/algorithm/string.hpp>
 namespace llh_converter
 {
+namespace
+{
+[[noreturn]] void throwGeoidError(const std::string& message)
+{
+  throw std::runtime_error(message);
+}
+}  // namespace
+
 JPGEO2024::JPGEO2024()
 {
 }
@@ -52,8 +61,7 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file)
   std::ifstream infile(geoid_file);
   if (!infile)
   {
-    std::cerr << "Error opening file: " << geoid_file << std::endl;
-    return;
+    throwGeoidError("Error opening file: " + geoid_file);
   }
 
   std::string line;
@@ -69,8 +77,7 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file)
 
   if (!header_end)
   {
-    std::cerr << "Header not properly formatted in file." << std::endl;
-    return;
+    throwGeoidError("Header not properly formatted in file.");
   }
 
   geoid_map_.resize(row_size_, std::vector<double>(column_size_, -9999.0));
@@ -81,8 +88,9 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file)
     {
       if (!(infile >> geoid_map_[i][j]))
       {
-        std::cerr << "Error reading geoid data at row " << i << ", col " << j << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "Error reading geoid data at row " << i << ", col " << j;
+        throwGeoidError(oss.str());
       }
     }
   }
@@ -97,8 +105,7 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file, const std::string& h
   std::ifstream infile(hrefconv_file);
   if (!infile)
   {
-    std::cerr << "Error opening file: " << hrefconv_file << std::endl;
-    return;
+    throwGeoidError("Error opening file: " + hrefconv_file);
   }
 
   std::string line;
@@ -114,8 +121,7 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file, const std::string& h
 
   if (!header_end)
   {
-    std::cerr << "Header not properly formatted in file." << std::endl;
-    return;
+    throwGeoidError("Header not properly formatted in file.");
   }
 
   for (int i = 0; i < row_size_; ++i)
@@ -125,8 +131,9 @@ void JPGEO2024::loadGeoidMap(const std::string& geoid_file, const std::string& h
       double tmp;
       if (!(infile >> tmp))
       {
-        std::cerr << "Error reading geoid data at row " << i << ", col " << j << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "Error reading geoid data at row " << i << ", col " << j;
+        throwGeoidError(oss.str());
       }
 
       if (tmp > -9998.0)
@@ -141,14 +148,14 @@ double JPGEO2024::getGeoid(const double& lat, const double& lon)
 {
   if (!is_geoid_loaded_)
   {
-    std::cerr << "Geoid map not loaded." << std::endl;
-    return std::numeric_limits<double>::quiet_NaN();
+    throwGeoidError("Geoid map not loaded.");
   }
 
   if (lat < 15.0 || lat > 50.0 || lon < 120.0 || lon > 160.0)
   {
-    std::cerr << "Input coordinates out of range." << std::endl;
-    return std::numeric_limits<double>::quiet_NaN();
+    std::ostringstream oss;
+    oss << "Error: latitude/longitude is out of range (15~50, 120~160): " << lat << ", " << lon;
+    throwGeoidError(oss.str());
   }
 
   // Grid step (latitude 1 minute = 0.0166667 degrees, longitude 1.5 minutes = 0.025 degrees)
@@ -164,7 +171,9 @@ double JPGEO2024::getGeoid(const double& lat, const double& lon)
 
   if (i1 < 0 || i2 >= row_size_ || j1 < 0 || j2 >= column_size_)
   {
-    return std::numeric_limits<double>::quiet_NaN();
+    std::ostringstream oss;
+    oss << "Error: latitude/longitude is outside the JPGEO2024 grid: " << lat << ", " << lon;
+    throwGeoidError(oss.str());
   }
 
   // Geoid height at the four corners
@@ -175,7 +184,9 @@ double JPGEO2024::getGeoid(const double& lat, const double& lon)
 
   if (f00 == -9999.0 || f10 == -9999.0 || f01 == -9999.0 || f11 == -9999.0)
   {
-    return std::numeric_limits<double>::quiet_NaN();
+    std::ostringstream oss;
+    oss << "Error: Not supported area at coordinates: " << lat << ", " << lon;
+    throwGeoidError(oss.str());
   }
 
   // Coordinates of the four corners
