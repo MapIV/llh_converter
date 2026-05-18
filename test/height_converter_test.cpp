@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <functional>
 
 void test(const double& result, const double& answer)
 {
@@ -69,6 +70,44 @@ void test2(const double result0, const double result1, const double answer0, con
 int main(int argc, char** argv)
 {
   llh_converter::HeightConverter hc;
+  bool has_failure = false;
+
+  auto test_throw = [&](const std::string& label, const std::function<void()>& func) {
+    std::cout << label;
+    try
+    {
+      func();
+      std::cout << "\033[31;1mTEST FAILED : expected exception\033[m" << std::endl;
+      has_failure = true;
+    }
+    catch (const std::exception& e)
+    {
+      std::cout << "\033[32;1mTEST SUCCESS: " << e.what() << "\033[m" << std::endl;
+    }
+  };
+
+  auto test_throw_contains =
+    [&](const std::string& label, const std::function<void()>& func, const std::string& expected_message) {
+      std::cout << label;
+      try
+      {
+        func();
+        std::cout << "\033[31;1mTEST FAILED : expected exception\033[m" << std::endl;
+        has_failure = true;
+      }
+      catch (const std::exception& e)
+      {
+        if (std::string(e.what()).find(expected_message) != std::string::npos)
+        {
+          std::cout << "\033[32;1mTEST SUCCESS: " << e.what() << "\033[m" << std::endl;
+        }
+        else
+        {
+          std::cout << "\033[31;1mTEST FAILED : unexpected message: " << e.what() << "\033[m" << std::endl;
+          has_failure = true;
+        }
+      }
+    };
 
   // GSIGEO Test
   std::cout << "GSIGEO2011 Test" << std::endl;
@@ -115,6 +154,14 @@ int main(int argc, char** argv)
   std::cout << "Testing (" << std::setw(9) << 35.160410 << ", " << std::setw(9) << 139.615526 << ") ... ";
   test(hc.getGeoidDeg(35.160410, 139.615526), 36.7568);
 
+  std::cout << "Out of range geoid error test" << std::endl;
+  hc.setGeoidType(llh_converter::GeoidType::GSIGEO2011);
+  test_throw_contains("Testing GSIGEO2011 out of range ... ", [&]() { hc.getGeoidDeg(35.0, 100.0); },
+                      "Error: latitude/longitude is out of range");
+  hc.setGeoidType(llh_converter::GeoidType::JPGEO2024);
+  test_throw_contains("Testing JPGEO2024 out of range ... ", [&]() { hc.getGeoidDeg(35.0, 100.0); },
+                      "Error: latitude/longitude is out of range");
+
   // LLHConverter test
   std::cout << "LLHConverter Test" << std::endl;
   llh_converter::LLHConverter llh_converter;
@@ -122,10 +169,26 @@ int main(int argc, char** argv)
   param.projection_method = llh_converter::ProjectionMethod::MGRS;
   param.height_convert_type = llh_converter::ConvertType::NONE;
   param.geoid_type = llh_converter::GeoidType::EGM2008;
+  param.tm_param.inv_flatten_ratio = 298.257222101;
+  param.tm_param.semi_major_axis = 6378137.0;
+  param.tm_param.scale_factor = 0.9996;
+  param.tm_param.origin_lat_rad = 35.5 * M_PI / 180.;
+  param.tm_param.origin_lon_rad = 135.5 * M_PI / 180.;
 
   double test_lat = 35.5, test_lon = 135.5;
+  double overseas_lat = 37.7749, overseas_lon = -122.4194;
 
   double x, y, z;
+  llh_converter::LLHParam tm_param = param;
+  tm_param.projection_method = llh_converter::ProjectionMethod::TM;
+  tm_param.geoid_type = llh_converter::GeoidType::JPGEO2024;
+  test_throw_contains("Testing LLHConverter JPGEO2024 out of range ... ",
+                      [&]() { llh_converter.convertDeg2XYZ(overseas_lat, overseas_lon, 50, x, y, z, tm_param); },
+                      "Error: latitude/longitude is out of range");
+  tm_param.geoid_type = llh_converter::GeoidType::GSIGEO2011;
+  test_throw_contains("Testing LLHConverter GSIGEO2011 out of range ... ",
+                      [&]() { llh_converter.convertDeg2XYZ(overseas_lat, overseas_lon, 50, x, y, z, tm_param); },
+                      "Error: latitude/longitude is out of range");
   std::cout << "Testing MGRS  ... ";
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
   test2(x, y, 45346.7389, 28608.3575);
@@ -140,15 +203,9 @@ int main(int argc, char** argv)
 
   // Test TM
   param.projection_method = llh_converter::ProjectionMethod::TM;
-  param.tm_param.inv_flatten_ratio = 298.257222101;
-  param.tm_param.semi_major_axis = 6378137.0;
-  param.tm_param.scale_factor = 0.9996;
-  param.tm_param.origin_lat_rad = 35.5 * M_PI / 180.;
-  param.tm_param.origin_lon_rad = 135.5 * M_PI / 180.;
-
   std::cout << "Testing TM    ... ";
   llh_converter.convertDeg2XYZ(test_lat, test_lon, 50, x, y, z, param);
   test2(x, y, 0.0, 0.0);
 
-  return 0;
+  return has_failure ? 1 : 0;
 }

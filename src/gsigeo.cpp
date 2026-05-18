@@ -35,11 +35,20 @@
 #include <sstream>
 #include <cmath>
 #include <iomanip>
+#include <stdexcept>
 
 #include <boost/algorithm/string.hpp>
 
 namespace llh_converter
 {
+namespace
+{
+[[noreturn]] void throwGeoidError(const std::string& message)
+{
+  throw std::runtime_error(message);
+}
+}  // namespace
+
 std::vector<std::string> split(std::string input, char delimiter)
 {
   std::istringstream stream(input);
@@ -67,8 +76,7 @@ void GSIGEO2011::loadGeoidMap(const std::string& geoid_file)
   std::ifstream ifs(geoid_file);
   if (!ifs)
   {
-    std::cerr << "Error: Cannot open Geoid data file: " << geoid_file << std::endl;
-    exit(2);
+    throwGeoidError("Error: Cannot open Geoid data file: " + geoid_file);
   }
 
   geoid_map_.resize(row_size_);
@@ -105,8 +113,7 @@ double GSIGEO2011::getGeoid(const double& lat, const double& lon)
 {
   if (!is_geoid_loaded_)
   {
-    std::cerr << "Error: Geoid map is not loaded" << std::endl;
-    exit(1);
+    throwGeoidError("Error: Geoid map is not loaded");
   }
   const double lat_min = 20;
   const double lon_min = 120;
@@ -125,16 +132,15 @@ double GSIGEO2011::getGeoid(const double& lat, const double& lon)
 
   if (i_lat < 0 || i_lat >= row_size_ - 1 || i_lon < 0 || i_lon >= column_size_ - 1)
   {
-    std::cerr << "Error: latitude/longitude is out of range (20~50, 120~150)" << std::endl;
-    std::cerr << (lat, lon) << std::endl;
-    exit(1);
+    std::ostringstream oss;
+    oss << "Error: latitude/longitude is out of range (20~50, 120~150): " << lat << ", " << lon;
+    throwGeoidError(oss.str());
   }
 
   if (geoid_map_[i_lat][i_lon] == 999 || geoid_map_[i_lat][j_lon] == 999 || geoid_map_[j_lat][i_lon] == 999 ||
       geoid_map_[j_lat][j_lon] == 999)
   {
-    std::cerr << "Error: Not supported area" << std::endl;
-    exit(1);
+    throwGeoidError("Error: Not supported area");
   }
 
   double geoid = (1 - t) * (1 - u) * geoid_map_[i_lat][i_lon] + (1 - t) * u * geoid_map_[i_lat][j_lon] +
