@@ -107,7 +107,13 @@ void HeightConverter::loadGSIGEOGeoidFile(const std::string& geoid_file)
 
 void HeightConverter::loadGSIGEOGeoidFile()
 {
-  gsigeo2011_.loadGeoidMap("/usr/share/GSIGEO/gsigeo2011_ver2_1.asc");
+  const char* env_dir = std::getenv("GSIGEO_DATA");
+#ifdef _WIN32
+  const std::string dir = env_dir ? env_dir : "C:/ProgramData/MAP4/geoid";
+#else
+  const std::string dir = env_dir ? env_dir : "/usr/share/GSIGEO";
+#endif
+  gsigeo2011_.loadGeoidMap(dir + "/gsigeo2011_ver2_1.asc");
 }
 
 void HeightConverter::loadJPGEO2024GeoidFile(const std::string& geoid_file, const std::string& hrefconv_file)
@@ -117,7 +123,13 @@ void HeightConverter::loadJPGEO2024GeoidFile(const std::string& geoid_file, cons
 
 void HeightConverter::loadJPGEO2024GeoidFile()
 {
-  jpgeo2024_.loadGeoidMap("/usr/share/GSIGEO/JPGEO2024.isg", "/usr/share/GSIGEO/Hrefconv2024.isg");
+  const char* env_dir = std::getenv("GSIGEO_DATA");
+#ifdef _WIN32
+  const std::string dir = env_dir ? env_dir : "C:/ProgramData/MAP4/geoid";
+#else
+  const std::string dir = env_dir ? env_dir : "/usr/share/GSIGEO";
+#endif
+  jpgeo2024_.loadGeoidMap(dir + "/JPGEO2024.isg", dir + "/Hrefconv2024.isg");
 }
 
 double HeightConverter::getGeoidEGM2008(const double& lat_deg, const double& lon_deg)
